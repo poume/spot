@@ -67,6 +67,7 @@
 		server.text = @"(Not connected)";
 		lastServerContact.text = @"";
 	}
+	[self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)didReceiveMemoryWarning {

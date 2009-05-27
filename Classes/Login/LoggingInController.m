@@ -73,10 +73,17 @@
 {
 	spinner.hidden = YES;
 	
+	SpotSession *session = [SpotSession defaultSession];
 	NSError *err;
-	BOOL success = [[SpotSession defaultSession] authenticate:self.username password:self.password error:&err];
+	BOOL success = [session authenticate:self.username password:self.password error:&err];
 	if(!success) {
 		error.text = [NSString stringWithFormat:@"I couldn't log you in: %@", err.localizedDescription];
+		tryAgain.hidden = error.hidden = NO;
+		return;
+	}
+	
+	if(session && session.session && session.session->user_info && strcmp(session.session->user_info->type, "premium")) {
+		error.text = [NSString stringWithFormat:@"This account is not signed up for Spotify Premium."];
 		tryAgain.hidden = error.hidden = NO;
 		return;
 	}

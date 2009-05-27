@@ -28,7 +28,7 @@
 	///// Prepare the main UI
 	// Warm it up
 	[[PlayViewController defaultController] view];
-	
+
 	self.tabs = [[[UITabBarController alloc] init] autorelease];
 	
 	// Profile page

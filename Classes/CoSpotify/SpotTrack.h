@@ -34,7 +34,7 @@
 @property (readonly, nonatomic) float popularity;
 @property (readonly, nonatomic) BOOL playable;
 
-@property (readonly, nonatomic) struct track *track;
+@property (readonly, nonatomic) struct track *getTrack;
 @property (readwrite, assign, nonatomic) SpotPlaylist *playlist;
 
 @property (readonly) SpotId *fileId;

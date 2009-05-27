@@ -58,6 +58,16 @@
 }
  */
 
+-(void)viewWillAppear:(BOOL)animated;
+{
+	[self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+
+-(void)viewWillDisappear:(BOOL)animated;
+{
+	[self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -93,6 +103,10 @@
     return self.playlists.count;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
+{
+	return @"Your playlists";
+}
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -107,7 +121,15 @@
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 	
+	int idx = [indexPath indexAtPosition:0];	
+	if(idx % 2 == 0) {
+		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
+	} else {
+		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
+	}
+	
 	// Configure the cell. 
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	cell.text = playlist.name;
 
     return cell;

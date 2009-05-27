@@ -47,7 +47,7 @@
 	memset(&playlist, 0, sizeof(struct playlist));
 	tracks = [[NSMutableArray alloc] initWithObjects:track, nil];
 	track.playlist = self;
-	track.track->next = NULL;
+	track.getTrack->next = NULL;
 	playlist.num_tracks = 1;
 	
 	return self;
@@ -126,8 +126,8 @@
 {
   SpotTrack *lastTrack = [tracks lastObject];
   if(lastTrack)
-    lastTrack.track->next = track.track;
-  track.track->next = NULL;
+    lastTrack.getTrack->next = track.getTrack;
+  track.getTrack->next = NULL;
   track.playlist = self;
   [(NSMutableArray*)tracks addObject: track];
   playlist.num_tracks = [tracks count];

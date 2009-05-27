@@ -33,7 +33,7 @@
 
 @property (readonly, retain) SpotTrack *currentTrack;
 @property (readonly, retain) SpotPlaylist *currentPlaylist;
-@property (readonly) BOOL isPlaying;
+@property (readwrite) BOOL isPlaying;
 @property (readonly) SpotTrack *savedTrack;
 
 @end

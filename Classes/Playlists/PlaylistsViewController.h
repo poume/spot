@@ -6,7 +6,10 @@
 //  Copyright Third Cog Software 2009. All rights reserved.
 //
 
-@interface PlaylistsViewController : UITableViewController {
+@interface PlaylistsViewController : UIViewController 
+	<UITableViewDelegate, UITableViewDataSource>
+{
+	IBOutlet UITableView *tableView;
 	NSArray *playlists;
 }
 

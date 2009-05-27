@@ -64,7 +64,7 @@
 
 #pragma mark Properties
 
--(struct track*)track;
+-(struct track*)getTrack;
 {
 	return &track;
 }

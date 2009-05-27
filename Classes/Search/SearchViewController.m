@@ -75,6 +75,11 @@ enum {
   TracksSection
 };
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar_;
+{
+	[searchBar resignFirstResponder];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return 1;
 	return 4;
@@ -118,18 +123,26 @@ enum {
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
+	
+	int idx = [indexPath indexAtPosition:1];
+	
+	if(idx % 2 == 0) {
+		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
+	} else {
+		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
+	}
 
-
-	int idx = [indexPath indexAtPosition:1]; idx = idx;
 	switch([indexPath indexAtPosition:0]) {
     case SuggestionSection:{			
-			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.text = searchResults.suggestion;
+			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;	
+		cell.text = searchResults.suggestion;
     } break;
 		case ArtistsSection: {
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
 			
-			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.text = artist.name;
 		} break;
 		case TracksSection: {
@@ -139,8 +152,9 @@ enum {
 		} break;
 		case AlbumsSection: {
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-      cell.text = [NSString stringWithFormat:@"%@ by %@", album.name, album.artistName];
+			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.text = [NSString stringWithFormat:@"%@ by %@", album.name, album.artistName];
 		} break;
 	}
 	

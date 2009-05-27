@@ -6,6 +6,8 @@
 //  Copyright 2009 Third Cog Software. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import "PlayViewController.h"
 #import "SpotSession.h"
 #import "SpotTrack.h"
@@ -28,6 +30,11 @@ PlayViewController *GlobalPlayViewController;
 -init;
 {
 	if( ! [super initWithNibName:@"PlayView" bundle:nil] ) return nil;
+	
+	AudioSessionInitialize (NULL, NULL, NULL, NULL); 
+	AudioSessionSetActive (true);
+	UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
+	AudioSessionSetProperty (kAudioSessionProperty_AudioCategory, sizeof (sessionCategory), &sessionCategory);
 	
 	return self;
 }
@@ -127,11 +134,13 @@ PlayViewController *GlobalPlayViewController;
 }
 -(IBAction)next;
 {
+  [[SpotSession defaultSession].player stop];
   [[SpotSession defaultSession].player playNextTrack];
 }
 
 -(IBAction)prev;
 {
+  [[SpotSession defaultSession].player stop];
   [[SpotSession defaultSession].player playPreviousTrack];
 }
 
@@ -151,18 +160,18 @@ PlayViewController *GlobalPlayViewController;
     [playPauseButton setHidden:YES];
   }
   if([[n name] isEqual:@"play"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
+    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner setHidden:YES];
     [self selectCurrentTrack];
   }
   if([[n name] isEqual:@"pause"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
+    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner setHidden:YES];
   }
   if([[n name] isEqual:@"stop"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
+    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner setHidden:YES];
   }
@@ -186,9 +195,9 @@ PlayViewController *GlobalPlayViewController;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	int idx = [indexPath indexAtPosition:1];
+  int idx = [indexPath indexAtPosition:1];
   SpotTrack *track = [playlistDataSource.playlist.tracks objectAtIndex:idx];
-  if(track.playable){
+  if(track.playable) {
     [[SpotSession defaultSession].player playTrack:track rewind:YES];
   }
 }
