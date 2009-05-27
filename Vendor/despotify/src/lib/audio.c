@@ -80,7 +80,7 @@ int audio_context_free (AUDIOCTX * a)
 	int ret;
 
 	ret = 0;
-	if (a->is_playing)
+	if (a && a->is_playing)
 		ret = driver->stop (a);
 
 	if (a->title)
@@ -96,7 +96,7 @@ int audio_play (AUDIOCTX * a)
 {
 	int ret;
 
-	if (a->is_playing) {
+	if (a && a->is_playing) {
 		a->is_playing = 0;
 		if ((ret = driver->stop (a)))
 			return ret;
@@ -113,7 +113,7 @@ int audio_stop (AUDIOCTX * a)
 {
 	int ret = 0;
 
-	if (a->is_playing) {
+	if (a && a->is_playing) {
 		DSFYDEBUG
 			("audio_stop(): now calling driver's ->stop() routine..\n")
 
@@ -140,7 +140,7 @@ int audio_pause (AUDIOCTX * a)
 /* resume playing */
 int audio_resume (AUDIOCTX * a)
 {
-	if (!a->is_playing)
+	if (!a || !a->is_playing)
 		return 0;
 
 	DSFYDEBUG
