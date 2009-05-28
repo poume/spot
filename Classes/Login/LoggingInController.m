@@ -8,6 +8,10 @@
 
 #import "LoggingInController.h"
 #import "CoSpotify.h"
+#import "SpotAppDelegate.h"
+
+#import "CoSpotify.h"
+
 
 @implementation LoggingInController
 @synthesize username, password;
@@ -81,6 +85,9 @@
 		tryAgain.hidden = error.hidden = NO;
 		return;
 	}
+  
+  //post suggin successfull notification
+  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"loggedin" object:self]];
 	
 	if(session && session.session && session.session->user_info && strcmp(session.session->user_info->type, "premium")) {
 		error.text = [NSString stringWithFormat:@"This account is not signed up for Spotify Premium."];
@@ -93,6 +100,7 @@
 	
 	[[self retain] autorelease]; // We will disappear after the pop
 	
+  
 	NSMutableArray *controllers = [[navController.viewControllers mutableCopy] autorelease];
 	[controllers removeLastObject];
 	navController.viewControllers = controllers;

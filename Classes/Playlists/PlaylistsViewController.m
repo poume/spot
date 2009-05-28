@@ -7,6 +7,7 @@
 //
 
 #import "PlaylistsViewController.h"
+#import "SpotNavigationController.h"
 #import "CoSpotify.h"
 
 @implementation PlaylistsViewController
@@ -121,9 +122,9 @@
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	int idx = [indexPath indexAtPosition:0];	
+	int idx = [indexPath indexAtPosition:0];
 	if(idx % 2 == 0) {
-		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
+        cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
 	} else {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
 	}
@@ -137,16 +138,18 @@
 
 
 
-/*
+
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+  SpotPlaylist *playlist = [self.playlists objectAtIndex:[indexPath indexAtPosition:0]];
+  [[SpotSession defaultSession].player playPlaylist:playlist firstTrack:nil];
+  [self.navigationController showPlayer];
     // Navigation logic may go here -- for example, create and push another view controller.
 	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
 	// [self.navigationController pushViewController:anotherViewController animated:YES];
 	// [anotherViewController release];
 }
-*/
+
 
 
 /*

@@ -69,6 +69,7 @@
 						<float key="IBUIAlpha">6.971831e-01</float>
 						<int key="IBUIContentMode">3</int>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
+						<string key="IBText"/>
 						<string key="IBPrompt"/>
 						<string key="IBPlaceholder">We Love Music</string>
 						<bool key="IBShowsCancelButton">YES</bool>
