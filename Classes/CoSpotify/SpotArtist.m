@@ -22,7 +22,7 @@
   
   browsing = NO;
 	
-	memcpy(&artist, artist_, sizeof(struct artist));
+  memcpy(&artist, artist_, sizeof(struct artist));
   
   strcpy(artistBrowse.name, artist.name);
   strcpy(artistBrowse.id, artist.id);
