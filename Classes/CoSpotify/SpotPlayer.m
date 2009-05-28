@@ -41,9 +41,10 @@
     [UIApplication sharedApplication].idleTimerDisabled = YES; //dont sleep while playing music
     //if([self.savedTrack isEqual:self.currentTrack])
     
-    if([self.savedTrack isEqual:self.currentTrack])
+    if([self.savedTrack isEqual:self.currentTrack]) {
       willPlay = despotify_resume([SpotSession defaultSession].session);
-    else
+      if(willPlay) [self trackDidStart];
+    } else
       willPlay = despotify_play([SpotSession defaultSession].session, self.currentTrack.getTrack, NO); 
     return willPlay;
   }
