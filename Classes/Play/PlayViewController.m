@@ -13,6 +13,9 @@
 #import "SpotTrack.h"
 #import "SpotArtist.h"
 
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+
 PlayViewController *GlobalPlayViewController;
 
 @interface PlayViewController ()
@@ -30,12 +33,11 @@ PlayViewController *GlobalPlayViewController;
 -init;
 {
 	if( ! [super initWithNibName:@"PlayView" bundle:nil] ) return nil;
-	
-	AudioSessionInitialize (NULL, NULL, NULL, NULL); 
-	AudioSessionSetActive (true);
-	UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
-	AudioSessionSetProperty (kAudioSessionProperty_AudioCategory, sizeof (sessionCategory), &sessionCategory);
-	
+
+  AudioSessionInitialize (NULL, NULL, NULL, NULL); 
+  AudioSessionSetActive (true);
+  UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
+  AudioSessionSetProperty (kAudioSessionProperty_AudioCategory, sizeof (sessionCategory), &sessionCategory);
 	return self;
 }
 /*

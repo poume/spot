@@ -8,6 +8,8 @@
     <true/>
     <key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>UIRequiresPersistentWiFi</key>
+	<true/>
 	<key>CFBundleDisplayName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>

@@ -47,13 +47,8 @@ NSTimer *timer;
     if([self.savedTrack isEqual:self.currentTrack])
       willPlay = despotify_resume([SpotSession defaultSession].session);
     else
-      willPlay = despotify_play([SpotSession defaultSession].session, self.currentTrack.getTrack, NO); 
-    if(!willPlay) {
-      return NO;
-    } else {
-      [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"willplay" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:currentPlaylist, @"playlist", currentTrack, @"track", nil]]];
-    }
-    return YES;
+      willPlay = despotify_play([SpotSession defaultSession].session, self.currentTrack.track, NO); 
+    return willPlay;
   }
   return NO; 
 }
@@ -63,7 +58,7 @@ NSTimer *timer;
   if(self.isPlaying && !willPlay){
     [UIApplication sharedApplication].idleTimerDisabled = NO; //can sleep while not playing
     isPlaying = !despotify_stop([SpotSession defaultSession].session) && isPlaying;  
-    return YES;
+    return !isPlaying;
   }
   return NO;
 }
@@ -120,9 +115,11 @@ NSTimer *timer;
 
 -(BOOL)play;
 {
-  BOOL retVal = [self startPlayback];
-  if(retVal == YES) [self trackDidStart];  
-  return retVal;
+  if([self startPlayback]){
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"willplay" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:currentPlaylist, @"playlist", currentTrack, @"track", nil]]];
+    return YES;
+  }
+  return NO;
 }
 
 -(BOOL)stop;
