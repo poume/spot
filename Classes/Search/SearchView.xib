@@ -41,20 +41,18 @@
 						<int key="NSvFlags">274</int>
 						<string key="NSFrame">{{0, 44}, {320, 416}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC43NTg5NDA4OCAxIDAuODE5MjA1NjQAA</bytes>
-						</object>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
+						<float key="IBUIAlpha">8.098592e-01</float>
 						<bool key="IBUIBouncesZoom">NO</bool>
+						<int key="IBUIStyle">1</int>
 						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
 						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">4.400000e+01</float>
-						<float key="IBUISectionHeaderHeight">2.200000e+01</float>
-						<float key="IBUISectionFooterHeight">2.200000e+01</float>
+						<float key="IBUISectionHeaderHeight">1.000000e+01</float>
+						<float key="IBUISectionFooterHeight">1.000000e+01</float>
 					</object>
 					<object class="IBUISearchBar" id="27757227">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -63,7 +61,7 @@
 						<reference key="NSSuperview" ref="191373211"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4wNzE3OTYwNiAwLjI0NDg5Nzk2IDAuMDkwNTUyOTM0IDAuNTc5OTk5OTgAA</bytes>
+							<bytes key="NSRGB">MC4xNTQ1OTE5NSAwLjI0NDg5Nzk2IDAuMTYwMTQ1ODYgMC41Nzk5OTk5OAA</bytes>
 						</object>
 						<bool key="IBUIOpaque">NO</bool>
 						<float key="IBUIAlpha">6.971831e-01</float>
@@ -75,7 +73,7 @@
 						<bool key="IBShowsCancelButton">YES</bool>
 						<object class="NSColor" key="IBTintColor">
 							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4wNDk1MDMzNiAwLjM1NzE0Mjg3IDAuMDgyNDAyMjY3AA</bytes>
+							<bytes key="NSRGB">MC4wNjI1MzYwMDEgMC4yNjAyMDQwOCAwLjA3NzgyNTQ3MgA</bytes>
 						</object>
 						<object class="IBUITextInputTraits" key="IBTextInputTraits"/>
 					</object>
@@ -83,11 +81,8 @@
 				<string key="NSFrameSize">{320, 460}</string>
 				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
-					<int key="NSColorSpace">3</int>
-					<bytes key="NSWhite">MQA</bytes>
-					<object class="NSColorSpace" key="NSCustomColorSpace">
-						<int key="NSID">2</int>
-					</object>
+					<int key="NSColorSpace">1</int>
+					<bytes key="NSRGB">MC43NTU2NzM0MSAxIDAuNzM1Njg4NjMAA</bytes>
 				</object>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
 			</object>

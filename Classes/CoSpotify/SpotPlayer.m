@@ -13,8 +13,6 @@
 #import "SpotPlaylist.h"
 #import "SpotAlbum.h"
 
-NSTimer *timer;
-
 @interface SpotPlayer (Private)
 
 -(void)setCurrentPlaylist:(SpotPlaylist*)pl;
@@ -30,7 +28,6 @@ NSTimer *timer;
   if( ! [super init] ) return nil;
   
   session = session_;
-  timer = nil;
   return self;
 }
 

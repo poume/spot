@@ -92,10 +92,10 @@
 #pragma mark 
 #pragma mark Table view callbacks
 enum {
-  SuggestionSection,
-	ArtistsSection,
-	AlbumsSection,
-  TracksSection
+  SuggestionSection = 0,
+  ArtistsSection = 1,
+  AlbumsSection = 2,
+  TracksSection = 3
 };
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar_;
@@ -105,7 +105,12 @@ enum {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return 1;
-	return 4;
+	int i = 0;
+    if(searchResults.suggestion) i++;
+    if(searchResults.artists.count) i++;
+    if(searchResults.tracks.count) i++;
+    if(searchResults.albums.count) i++;
+    return i;
 }
 
 
@@ -113,27 +118,54 @@ enum {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return 0;
-	
-	switch (section) {
-    case SuggestionSection: return searchResults.suggestion ? 1 : 0;
-		case ArtistsSection: return searchResults.artists.count;
-		case TracksSection:  return searchResults.tracks.count;
-		case AlbumsSection:  return searchResults.albums.count;
-	}
-	return 0;	
+
+    switch([self getSection:section]) {
+        case TracksSection: return searchResults.tracks.count;
+        case AlbumsSection: return searchResults.albums.count;
+        case ArtistsSection: return searchResults.artists.count;
+        case SuggestionSection: return searchResults.suggestion ? 1 : 0;
+    }
+    
+    return 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
 {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return @"Search results";
-	
-	switch (section) {
-    case SuggestionSection: return @"Did you mean";
-		case ArtistsSection: return @"Artists";
-		case TracksSection: return @"Tracks";
-		case AlbumsSection: return @"Albums";
-	}
-	return @"???";
+
+    switch([self getSection:section]) {
+        case TracksSection: return @"Tracks";
+        case AlbumsSection: return @"Albums";
+        case ArtistsSection: return @"Artists";
+        case SuggestionSection: return @"Did you mean";
+    }
+    
+    return @"";
+}
+
+-(NSInteger)getSection:(NSInteger)section;
+{
+    // Ugly crap
+    if(section == 3) return TracksSection;
+    if(section == 2) {
+        if(!searchResults.artists.count && searchResults.tracks.count) return TracksSection;
+        return ArtistsSection;
+    }
+    if(section == 1) {
+        if(searchResults.suggestion && searchResults.albums.count) return AlbumsSection;
+        if(searchResults.suggestion && searchResults.artists.count) return ArtistsSection;
+        if(searchResults.suggestion && searchResults.tracks.count) return TracksSection;
+        if(searchResults.albums.count && searchResults.artists.count) return ArtistsSection;
+        if(searchResults.albums.count && searchResults.tracks.count) return TracksSection;    
+        if(searchResults.artists.count && searchResults.tracks.count) return TracksSection;
+        return AlbumsSection;
+    }
+    if(section == 0) {
+        if(!searchResults.suggestion && searchResults.albums.count) return AlbumsSection;
+        if(!searchResults.suggestion && searchResults.artists.count) return ArtistsSection;
+        if(!searchResults.suggestion && searchResults.tracks.count) return TracksSection;
+        return SuggestionSection;
+    }
 }
 
 
@@ -155,16 +187,14 @@ enum {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
 	}
 
-	switch([indexPath indexAtPosition:0]) {
-    case SuggestionSection:{			
-			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;	
-		cell.text = searchResults.suggestion;
-    } break;
+	switch([self getSection:[indexPath indexAtPosition:0]]) {
+        case SuggestionSection:{			
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;	
+            cell.text = searchResults.suggestion;
+        } break;
 		case ArtistsSection: {
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
 			
-			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.text = artist.name;
 		} break;
@@ -188,7 +218,7 @@ enum {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int idx = [indexPath indexAtPosition:1];
-	switch([indexPath indexAtPosition:0]) {
+	switch([self getSection:[indexPath indexAtPosition:0]]) {
     case SuggestionSection:{
       [searchBar setText:searchResults.suggestion];
       [self searchForString:searchResults.suggestion];

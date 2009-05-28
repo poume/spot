@@ -22,6 +22,7 @@
 -(id)initWithSearch:(SpotSearch*)search;
 
 -(void)searchForString:(NSString*)string;
+-(NSInteger)getSection:(NSInteger)section;
 
 @property (nonatomic, assign) SpotSearch *searchResults;
 
