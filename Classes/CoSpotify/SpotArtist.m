@@ -16,22 +16,21 @@
 
 @synthesize browsing;
 
--(id)initWithArtist:(struct artist*)artist_;
+-(id)initWithArtist:(struct artist*)artist;
 {
 	if( ! [super init] ) return nil;
   
   browsing = NO;
-	
-  memcpy(&artist, artist_, sizeof(struct artist));
-  
-  strcpy(artistBrowse.name, artist.name);
-  strcpy(artistBrowse.id, artist.id);
-  strcpy(artistBrowse.portrait_id, artist.portrait_id);
-  artistBrowse.popularity = artist.popularity;
+
+  strcpy(artist_id, artist->id);
+  strcpy(artistBrowse.name, artist->name);
+  strcpy(artistBrowse.id, artist->id);
+  strcpy(artistBrowse.portrait_id, artist->portrait_id);
+  artistBrowse.popularity = artist->popularity;
   
   artistBrowse.text = "";
   memset(artistBrowse.genres, 0, sizeof(artistBrowse.genres));
-    memset(artistBrowse.years_active, 0, sizeof(artistBrowse.years_active));
+  memset(artistBrowse.years_active, 0, sizeof(artistBrowse.years_active));
   artistBrowse.num_albums = 0;
   artistBrowse.albums = NULL;
   
@@ -73,7 +72,7 @@
 {
   if(!browsing){
     NSLog(@"Artist %@ loading more info", self);
-    struct artist_browse *ab = despotify_get_artist([SpotSession defaultSession].session, artist.id);
+    struct artist_browse *ab = despotify_get_artist([SpotSession defaultSession].session, artist_id);
     [self loadBrowse:ab];
   }
 }

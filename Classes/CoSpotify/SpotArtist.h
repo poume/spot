@@ -12,7 +12,7 @@
 #import "SpotItem.h"
 
 @interface SpotArtist : SpotItem {
-	struct artist artist;
+  char artist_id[33];
   struct artist_browse artistBrowse;
   
   BOOL browsing;
