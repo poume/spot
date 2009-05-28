@@ -40,8 +40,8 @@
     portrait.artId = artist.portraitId;
   }
   NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", artist.text];
-  NSLog(@"html: %@", html);
-  [artistText loadHTMLString:html baseURL:[NSURL URLWithString:@"http://www.google.com"]];
+
+  [artistText loadHTMLString:html baseURL:[NSURL URLWithString:@"http://www.spotify.com"]];
   [popularity setValue:artist.popularity];
 }
 
@@ -108,7 +108,8 @@
 	
   SpotAlbum *album = [artist.albums objectAtIndex:idx];
   cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-  cell.text = [NSString stringWithFormat:@"%@", album.name];
+  NSString *yearString = [NSString stringWithFormat:@" (%d)", album.year];
+  cell.text = [NSString stringWithFormat:@"%@%@", album.name, album.year ? yearString : @""];
   
   return cell;
 }
