@@ -47,7 +47,7 @@ NSTimer *timer;
     if([self.savedTrack isEqual:self.currentTrack])
       willPlay = despotify_resume([SpotSession defaultSession].session);
     else
-      willPlay = despotify_play([SpotSession defaultSession].session, self.currentTrack.track, NO); 
+      willPlay = despotify_play([SpotSession defaultSession].session, self.currentTrack.getTrack, NO); 
     return willPlay;
   }
   return NO; 
