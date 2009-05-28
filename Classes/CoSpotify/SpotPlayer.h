@@ -33,6 +33,8 @@
 -(BOOL)stop;
 -(BOOL)playNextTrack;
 -(BOOL)playPreviousTrack;
+-(void)trackDidStart;
+-(void)trackDidEnd;
 
 @property (readonly, retain) SpotTrack *currentTrack;
 @property (readonly, retain) SpotPlaylist *currentPlaylist;
