@@ -123,7 +123,7 @@
 
 -(BOOL)stop;
 {
-  if([self stopPlayback]){
+  if([self stopPlayback]) {
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"stop" object:self]];
     return YES;
   }
@@ -136,6 +136,8 @@
   if(next) {
     [self playTrack:next rewind:NO];
     return YES;
+  } else {
+    [self stop];
   }
   return NO;
 }
