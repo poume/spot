@@ -173,7 +173,7 @@ PlayViewController *GlobalPlayViewController;
     [waitForPlaySpinner setHidden:YES];
   }
   if([[n name] isEqual:@"stop"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
+    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner setHidden:YES];
   }
