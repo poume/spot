@@ -138,8 +138,9 @@
     return YES;
   } else {
     [self stop];
+    songChange = YES;
+    return NO;
   }
-  return NO;
 }
 
 -(BOOL)playPreviousTrack;
