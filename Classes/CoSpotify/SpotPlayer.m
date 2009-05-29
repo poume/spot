@@ -35,13 +35,13 @@
 
 -(BOOL)startPlayback;
 {
-  if(self.isPlaying || willPlay) return NO;
+  if((self.isPlaying || willPlay) && !songChange) return NO;
   //start playback if we have something to play
   if(self.currentTrack){
     [UIApplication sharedApplication].idleTimerDisabled = YES; //dont sleep while playing music
     //if([self.savedTrack isEqual:self.currentTrack])
     
-    if([self.savedTrack isEqual:self.currentTrack]) {
+    if([self.savedTrack isEqual:self.currentTrack] && !songChange) {
       willPlay = despotify_resume([SpotSession defaultSession].session);
       if(willPlay) [self trackDidStart];
     } else {
@@ -156,12 +156,14 @@
 {
   willPlay = NO;
   isPlaying = YES;
+  songChange = NO;
   [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"play" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:currentPlaylist, @"playlist", currentTrack, @"track", nil]]];
 }
 
 -(void)trackDidEnd;
 {
   [self stopPlayback];
+  songChange = YES;
   [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"trackDidEnd" object:self]];
 }
 

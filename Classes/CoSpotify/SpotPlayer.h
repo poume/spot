@@ -20,6 +20,7 @@
   
   BOOL isPlaying;
   BOOL willPlay;
+  BOOL songChange;
   
   NSMutableArray *queuedCommands;
 }
