@@ -166,6 +166,7 @@ enum {
         if(!searchResults.suggestion && searchResults.tracks.count) return TracksSection;
         return SuggestionSection;
     }
+    return 0;
 }
 
 

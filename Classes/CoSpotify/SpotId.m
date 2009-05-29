@@ -59,7 +59,7 @@
   return [self hash] == [other hash];
 }
 
--(NSInteger)hash;
+-(NSUInteger)hash;
 {
   return [[NSString stringWithCString:_id] hash];
 }

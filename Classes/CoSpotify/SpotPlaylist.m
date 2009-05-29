@@ -68,7 +68,7 @@
   return [self hash] == [other hash];
 }
 
--(NSInteger)hash;
+-(NSUInteger)hash;
 {
   return [[NSString stringWithFormat:@"%@%@", self.author, self.name] hash];
 }
