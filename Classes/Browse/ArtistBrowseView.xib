@@ -54,21 +54,18 @@
 						<int key="NSvFlags">306</int>
 						<string key="NSFrame">{{0, 70}, {320, 390}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC44MTc1NDU5NSAxIDAuODE2NzY2ODYAA</bytes>
-						</object>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<int key="IBUIContentMode">5</int>
 						<bool key="IBUIBouncesZoom">NO</bool>
+						<int key="IBUIStyle">1</int>
 						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
 						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">4.400000e+01</float>
-						<float key="IBUISectionHeaderHeight">2.200000e+01</float>
-						<float key="IBUISectionFooterHeight">2.200000e+01</float>
+						<float key="IBUISectionHeaderHeight">1.000000e+01</float>
+						<float key="IBUISectionFooterHeight">1.000000e+01</float>
 					</object>
 					<object class="IBUIWebView" id="97111679">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -76,8 +73,8 @@
 						<string key="NSFrame">{{69, 0}, {251, 70}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">2</int>
-							<bytes key="NSRGB">MC41MTk3NjU5MSAwLjcwMTIwMjA5IDAuNzQ1MDk3OTQgMC40Nzk5OTk5OQA</bytes>
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC43NDA4NjkyMiAwLjkzNDExNTQ3IDEgMAA</bytes>
 						</object>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
@@ -88,7 +85,7 @@
 				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
-					<bytes key="NSRGB">MC41NTc2MjQ0IDAuNzM5MzkxMTUgMC41Njg4MDMxOSAwLjQ3OTk5OTk5AA</bytes>
+					<bytes key="NSRGB">MC41NTc2MjQ0IDAuNzM5MzkxMTUgMC41Njg4MDMxOSAwAA</bytes>
 				</object>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
 			</object>
@@ -170,8 +167,8 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="507946772"/>
-							<reference ref="97111679"/>
 							<reference ref="820640564"/>
+							<reference ref="97111679"/>
 						</object>
 						<reference key="parent" ref="360949347"/>
 					</object>
