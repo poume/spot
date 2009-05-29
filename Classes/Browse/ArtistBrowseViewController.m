@@ -118,7 +118,7 @@
   SpotAlbum *album = [artist.albums objectAtIndex:idx];
   cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
   NSString *yearString = [NSString stringWithFormat:@" (%d)", album.year];
-  cell.text = [NSString stringWithFormat:@"%@%@", album.name, album.year ? yearString : @""];
+  cell.textLabel.text = [NSString stringWithFormat:@"%@%@", album.name, album.year ? yearString : @""];
   
   return cell;
 }

@@ -79,6 +79,7 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<bool key="IBUIScalesPageToFit">YES</bool>
+						<int key="IBUIDataDetectorTypes">2</int>
 					</object>
 				</object>
 				<string key="NSFrameSize">{320, 460}</string>
@@ -217,7 +218,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>ArtistBrowseViewController</string>
 					<string>UIResponder</string>
-					<string>{{452, 276}, {320, 480}}</string>
+					<string>{{480, 46}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>SpotImageView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

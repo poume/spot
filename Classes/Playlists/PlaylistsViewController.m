@@ -131,7 +131,7 @@
 	
 	// Configure the cell. 
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	cell.text = playlist.name;
+	cell.textLabel.text = playlist.name;
 
     return cell;
 }

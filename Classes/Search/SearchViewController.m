@@ -190,24 +190,24 @@ enum {
 	switch([self getSection:[indexPath indexAtPosition:0]]) {
         case SuggestionSection:{			
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;	
-            cell.text = searchResults.suggestion;
+            cell.textLabel.text = searchResults.suggestion;
         } break;
 		case ArtistsSection: {
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
 			
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.text = artist.name;
+			cell.textLabel.text = artist.name;
 		} break;
 		case TracksSection: {
 			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.text = [NSString stringWithFormat:@"%@", track.title];
+			cell.textLabel.text = [NSString stringWithFormat:@"%@", track.title];
 		} break;
 		case AlbumsSection: {
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
 			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.text = [NSString stringWithFormat:@"%@ by %@", album.name, album.artistName];
+			cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", album.name, album.artistName];
 		} break;
 	}
 	
