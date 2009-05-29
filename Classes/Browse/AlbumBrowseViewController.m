@@ -42,7 +42,7 @@
 
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
+-(void)viewDidLoad {
     [super viewDidLoad];
   
   if(album.coverId){
@@ -52,7 +52,7 @@
   [popularity setValue:album.popularity];
   
   playlistDataSource.playlist = album.playlist;
-  [tracks reloadData];
+//  [tracks reloadData];
 }
 
 
@@ -64,28 +64,27 @@
 }
 */
 
-- (void)didReceiveMemoryWarning {
+-(void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 	
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
+-(void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
 
 
-- (void)dealloc {
+-(void)dealloc {
   [album release];
   [super dealloc];
 }
 
 
 #pragma mark Table view callbacks
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tracks:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int idx = [indexPath indexAtPosition:1];
   
@@ -96,7 +95,5 @@
   }
 //  [[self navigationController] pushViewController:[[[AlbumBrowseViewController alloc] initBrowsingAlbum:album] autorelease] animated:YES];
 }
-
-
 
 @end
