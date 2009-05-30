@@ -8,7 +8,6 @@
 
 #import "SpotArtist.h"
 #import "SpotAlbum.h"
-#import "SpotId.h"
 #import "SpotSession.h"
 #import "SpotURI.h"
 
@@ -101,6 +100,15 @@
 
 -(void)dealloc;
 {
+  [name release];
+  [portraitId release];
+  [artistId release];
+  [bios release];
+  [similarArtists release];
+  [genres release];
+  [yearsActive release];
+  [albums release];
+  
 	[super dealloc];
 }
 
@@ -120,9 +128,9 @@
 
 #pragma mark Properties
 
--(SpotId *)id;
+-(NSString *)id;
 {
-  return [SpotId artistId:(char*)[artistId UTF8String]];
+  return artistId;
 }
 
 -(SpotURI*)uri;

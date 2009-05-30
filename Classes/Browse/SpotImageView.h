@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-@class SpotId;
+#import "SpotImage.h"
 
 @interface SpotImageView : UIImageView {
-  SpotId *artId;
+  NSString *artId;
+  SpotImage *spotImage;
 }
 
-@property (readwrite, retain) SpotId *artId;
+@property (readwrite, retain) NSString *artId;
 
 @end

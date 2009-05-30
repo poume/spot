@@ -84,6 +84,7 @@
   [similarAlbumIds release];
   [discs release];
   [playlist dealloc];
+  [artist release];
   [super dealloc];
 }
 
@@ -102,7 +103,7 @@
 }
 
 #pragma mark shared
--(SpotId *)id; { return [SpotId albumId:(char*)[albumId UTF8String]]; }
+-(NSString *)id; { return albumId; }
 -(SpotURI*)uri;
 {
 //  char uri[50];
@@ -120,7 +121,7 @@
 -(SpotArtist *)artist;
 {
   if(!artist)
-    artist = [[[SpotSession defaultSession] artistById:[SpotId artistId:(char*)[artistId cStringUsingEncoding:NSASCIIStringEncoding]]] retain];
+    artist = [[[SpotSession defaultSession] artistById:artistId] retain];
   return artist;
 }
 

@@ -9,10 +9,18 @@
 #import "SpotImageView.h"
 
 #import "SpotSession.h"
-#import "SpotId.h"
+
 
 @implementation SpotImageView
--(SpotId*)artId;
+
+-(void)dealloc;
+{
+  [artId release];
+  [spotImage release];
+  [super dealloc];
+}
+
+-(NSString*)artId;
 {
 	return artId;
 }
@@ -20,24 +28,28 @@
 -(void)loadImage;
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  UIImage *image = nil;
+  [spotImage release]; //view might be reused if we are used in a cell
+  spotImage = nil;
+  
   if(artId){
-    image = [[SpotSession defaultSession] imageById:artId];
+    spotImage = [[[SpotSession defaultSession] imageById:artId] retain];
   }
-  if(image) [self setImage:image];
+  if(spotImage)
+    [self setImage:spotImage.image];
+  else
+    [self setImage:[UIImage imageNamed:@"icon.png"]]; //default image
+
   [pool drain];
 }
 
--(void)setArtId:(SpotId*)id;
+-(void)setArtId:(NSString*)id;
 {
   [id retain];
   [artId release];
   artId = id;
   
-  [self setImage:[UIImage imageNamed:@"icon.png"]];
   //TODO: show spinner while loading!
   [self loadImage];
-  
   //[self performSelectorInBackground:@selector(loadImage) withObject:nil]; //despotify isn't threadsafe OK!
 }
 

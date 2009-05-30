@@ -9,10 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "despotify.h"
 #import "SpotItem.h"
-#import "SpotTrackList.h"
 
 @class SpotTrack;
-@class SpotId;
 @class SpotURI;
 
 //Represents a movable slot in the playlist (mainly so that the same track can live in multiple playlists)
@@ -38,7 +36,7 @@
   
   NSString *name;
   NSString *author;
-  SpotId *playlistId;
+  NSString *playlistId;
   BOOL collaborative;
   NSInteger revision;
   NSInteger checksum;

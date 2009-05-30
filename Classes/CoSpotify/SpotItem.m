@@ -16,7 +16,7 @@
   //nothing
 }
 
--(SpotId *)id;
+-(NSString *)id;
 {
   [NSException raise:@"NotImplemented" format:@"SpotItem id not overridden"];
   return nil;
@@ -26,5 +26,16 @@
 {
   return [SpotURI uriWithId:self.id];
 }
+
+#if 1
+-(void)release;
+{
+  if([self retainCount] == 1){
+    NSLog(@"Will dealloc %@", self);
+  }
+  [super release];
+}
+
+#endif
 
 @end

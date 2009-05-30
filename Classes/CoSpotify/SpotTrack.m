@@ -44,9 +44,19 @@
 
 -(void)dealloc;
 {
-	//free(track.key);
-	[artist release];
+	[trackId release];
+  [title release];
+  [artistId release];
+  [artistName release];
+  [albumName release];
+  [albumId release];
+  [coverId release];
+  [similarTrackIds release];
+  [files release];
+  [restrictions release];
+  [artist release];
   [album release];
+  
 	[super dealloc];
 }
 
@@ -68,19 +78,12 @@
   return &de_track;
 }
 
--(SpotId *)id; { return [SpotId trackId:(char*)[trackId cStringUsingEncoding:NSASCIIStringEncoding]]; }
+-(NSString *)id; { return trackId; }
 
 -(SpotURI*)uri;
 {
   char uri[50];
   return [SpotURI uriWithURI:despotify_track_to_uri(&de_track, uri)];  
-}
-
--(UIImage*)coverImage;
-{
-  if(self.coverId)
-    return [[SpotSession defaultSession] imageById:[SpotId coverId:(char*)[coverId cStringUsingEncoding:NSASCIIStringEncoding]]];
-  return nil;
 }
 
 
@@ -98,7 +101,7 @@
 -(SpotAlbum*)album;
 {
   if(album) return album;
-  album = [[[SpotSession defaultSession] albumById:[SpotId albumId:(char*)[self.albumId cStringUsingEncoding:NSASCIIStringEncoding]]] retain];
+  album = [[[SpotSession defaultSession] albumById:albumId] retain];
   return album;
 }
 

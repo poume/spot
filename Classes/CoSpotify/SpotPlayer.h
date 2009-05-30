@@ -21,8 +21,6 @@
   BOOL isPlaying;
   BOOL willPlay;
   BOOL songChange;
-  
-  NSMutableArray *queuedCommands;
 }
 
 -(id)initWithSession:(SpotSession*)session;
