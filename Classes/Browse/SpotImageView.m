@@ -10,8 +10,27 @@
 
 #import "SpotSession.h"
 
+@interface SpotImageView ()
+
+-(void)setSpotImage:(SpotImage*)img;
+
+@end
+
 
 @implementation SpotImageView
+
+-(id)initWithFrame:(CGRect)frame;
+{
+  if(![super initWithFrame:frame]) return nil;
+  NSLog(@"imageview init");
+  
+  activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [self addSubview:activityView];
+  [activityView setHidden:NO];
+  activityView.hidesWhenStopped = YES;
+  
+  return self;
+}
 
 -(void)dealloc;
 {
@@ -25,6 +44,18 @@
 	return artId;
 }
 
+-(void)setSpotImage:(SpotImage*)img;
+{
+  [img retain];
+  [spotImage release];
+  spotImage = img;
+  if(spotImage)
+    [self setImage:spotImage.image];
+  else
+    [self setImage:[UIImage imageNamed:@"icon.png"]]; //default image  
+  [activityView stopAnimating];
+}
+
 -(void)loadImage;
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -32,25 +63,33 @@
   spotImage = nil;
   
   if(artId){
-    spotImage = [[[SpotSession defaultSession] imageById:artId] retain];
+    //check the cache to see if we might have the image loaded allready (so we dont need to bother the session thread for nothing)
+    SpotImage *cachedImage = (SpotImage*)[[SpotSession defaultSession] cachedItemById:artId];
+    if(cachedImage){
+      [self setSpotImage:cachedImage];
+    } else {
+      //Load image
+      [activityView startAnimating];
+      [[SpotSession defaultSession] asyncImageById:artId respondTo:self selector:@selector(setSpotImage:)];
+    }
   }
-  if(spotImage)
-    [self setImage:spotImage.image];
-  else
-    [self setImage:[UIImage imageNamed:@"icon.png"]]; //default image
 
   [pool drain];
 }
 
 -(void)setArtId:(NSString*)id;
 {
-  [id retain];
-  [artId release];
-  artId = id;
-  
-  //TODO: show spinner while loading!
-  [self loadImage];
-  //[self performSelectorInBackground:@selector(loadImage) withObject:nil]; //despotify isn't threadsafe OK!
+  if(![artId isEqual:id]){
+    [id retain];
+    [artId release];
+    artId = id;
+    //default image while loading
+    [self setImage:[UIImage imageNamed:@"icon.png"]];
+    if(artId){
+      //Begin load image
+      [self loadImage];
+    }
+  } 
 }
 
 @end

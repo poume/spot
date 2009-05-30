@@ -20,6 +20,9 @@
 @class SpotTrack;
 
 @interface SpotSession : NSObject {
+  NSThread *thread;
+  NSLock *networkLock;
+  
 	struct despotify_session *session;
 	BOOL loggedIn;
   
@@ -34,8 +37,10 @@
 
 -(NSArray*)playlists;
 
+
+-(void)asyncImageById:(NSString *)id_ respondTo:(id)object selector:(SEL)selector;
+
 -(SpotArtist *)artistById:(NSString *)id_;
--(SpotImage *)imageById:(NSString*)id;
 -(SpotAlbum *)albumById:(NSString *)id;
 -(SpotTrack *)trackById:(NSString *)id;
 
@@ -44,6 +49,8 @@
 -(SpotTrack*)trackByURI:(SpotURI*)uri;
 -(SpotPlaylist*)playlistByURI:(SpotURI*)uri;
 -(SpotSearch*)searchByURI:(SpotURI*)uri;
+
+-(SpotItem *)cachedItemById:(NSString*)id;
 
 @property (nonatomic, readonly) BOOL loggedIn;
 @property (readonly) NSString *username;
