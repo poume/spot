@@ -37,7 +37,7 @@
   year = track->year;
   popularity = track->popularity;
 	
-	artist = [[SpotArtist alloc] initWithArtist:track->artist];
+	if(artist != nil) artist = [[SpotArtist alloc] initWithArtist:track->artist];
 	
 	return self;
 }
