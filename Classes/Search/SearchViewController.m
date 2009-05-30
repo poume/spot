@@ -153,6 +153,8 @@ enum {
     if(section == 3) return TracksSection;
     if(section == 2) {
         if(!searchResults.artists.count && searchResults.tracks.count) return TracksSection;
+        if(!searchResults.albums.count && searchResults.tracks.count) return TracksSection;
+        if(!searchResults.suggestion && searchResults.tracks.count) return TracksSection;
         return ArtistsSection;
     }
     if(section == 1) {
