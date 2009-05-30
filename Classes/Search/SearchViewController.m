@@ -17,6 +17,8 @@
 #import "ArtistBrowseViewController.h"
 #import "PlayViewController.h"
 
+#import "SpotCell.h"
+
 
 @implementation SearchViewController
 
@@ -53,7 +55,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
   [super viewDidLoad];
-
+  searchBar.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastSearch"];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -78,9 +80,11 @@
 -(void)viewWillAppear:(BOOL)animated;
 {
 	[self.navigationController setNavigationBarHidden:YES animated:NO];
+  
   if([searchBar.text length] == 0)
     [searchBar becomeFirstResponder];
-  else
+  else if(!searchResults)
+    
     [self searchForString:searchBar.text];
 }
 
@@ -173,46 +177,62 @@ enum {
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-    }
-	
-	int idx = [indexPath indexAtPosition:1];
-	
-	if(idx % 2 == 0) {
-		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
-	} else {
-		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
-	}
+  static NSString *CellIdentifier = @"Cell";
+  static NSString *SpotCellIdentifier = @"AlbumCell";
+  UITableViewCell *the_cell = nil;
 
+	int idx = [indexPath indexAtPosition:1];
 	switch([self getSection:[indexPath indexAtPosition:0]]) {
-        case SuggestionSection:{			
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;	
-            cell.textLabel.text = searchResults.suggestion;
-        } break;
+    case SuggestionSection:{	
+      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
+      if (cell == nil) 
+        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];      
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			cell.textLabel.text = searchResults.suggestion;
+      the_cell = cell;
+    } break;
 		case ArtistsSection: {
+      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
+      if (cell == nil) 
+        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+            
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
-			
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.textLabel.text = artist.name;
+      the_cell = cell;
 		} break;
 		case TracksSection: {
+      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
+      if (cell == nil) 
+        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+            
 			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			cell.textLabel.text = [NSString stringWithFormat:@"%@", track.title];
+      the_cell = cell;
 		} break;
 		case AlbumsSection: {
+      SpotCell *cell = (SpotCell *)[tableView dequeueReusableCellWithIdentifier:SpotCellIdentifier];
+      if(!cell)
+        cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
+      
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
-			//cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", album.name, album.artistName];
+      cell.title.text = album.name;
+      cell.subText.text = album.artistName;
+      cell.artId = [SpotId coverId:(char*)[album.coverId cStringUsingEncoding:NSASCIIStringEncoding]];
+
+      the_cell = cell;
 		} break;
 	}
+
+	if(idx % 2 == 0) {
+		the_cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
+	} else {
+		the_cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
+	}
 	
-  return cell;
+  return the_cell;
 }
 
 
@@ -259,6 +279,10 @@ enum {
 	self.searchResults = nil;
   //NSLog(@"searching");
 	self.searchResults = [SpotSearch searchFor:string maxResults:50];
+  //save last search if it generated any results
+  if(searchResults && searchResults.totalAlbums || searchResults.totalTracks || searchResults.totalArtists){
+    [[NSUserDefaults standardUserDefaults] setObject:string forKey:@"lastSearch"];
+  }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar_;  

@@ -8,6 +8,7 @@
 
 #import "LoginViewController.h"
 #import "LoggingInController.h"
+#import "SpotSession.h"
 
 @implementation LoginViewController
 -(id)init;
@@ -79,6 +80,13 @@
 	
 	if([username.text isEqual:@""])
 		[username becomeFirstResponder];
+}
+-(void)viewDidAppear:(BOOL)animated;
+{
+  if([[NSUserDefaults standardUserDefaults] boolForKey:@"useAutoLogin"]){
+    if(![SpotSession defaultSession].loggedIn)
+      [self login];
+  }
 }
 -(void)viewWillDisappear:(BOOL)animated;
 {

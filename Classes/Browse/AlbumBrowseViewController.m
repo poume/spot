@@ -10,6 +10,7 @@
 #import "SpotSession.h"
 #import "SpotTrack.h"
 #import "PlayViewController.h"
+#import "SpotNavigationController.h"
 
 @implementation AlbumBrowseViewController
 -(id)initBrowsingAlbum:(SpotAlbum*)album_;
@@ -18,6 +19,7 @@
 		return nil;
   
   album = [album_ retain];
+  [album loadMoreInfo];
   self.title = album.name;
   
 	return self;
@@ -46,13 +48,21 @@
     [super viewDidLoad];
   
   if(album.coverId){
-    albumArt.artId = album.coverId;
+    albumArt.artId = [SpotId coverId:(char*)[album.coverId cStringUsingEncoding:NSASCIIStringEncoding]];
   }
   [albumName setText:album.name];
-  [popularity setValue:album.popularity];
+  artistName.text = [NSString stringWithFormat:@"%@ - %d", album.artistName, album.year];
+  artistName.delegate = self;
+
+  popularity.progress = album.popularity;
   
   playlistDataSource.playlist = album.playlist;
 //  [tracks reloadData];
+}
+
+-(void)didTouchLabel:(id)sender;
+{
+  [self.navigationController showArtist:album.artist];
 }
 
 
@@ -83,17 +93,23 @@
 }
 
 
+-(IBAction)showArtist:(id)sender;
+{
+  //when user clicks artist name
+  [self.navigationController showArtist:album.artist];
+}
+
 #pragma mark Table view callbacks
--(void)tracks:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	int idx = [indexPath indexAtPosition:1];
   
-  SpotTrack *track = [album.playlist.playableTrackList.tracks objectAtIndex:idx];
-  if(track.playable){
+  SpotTrack *track = [album.playlist.tracks objectAtIndex:idx];
+  if(track.isPlayable){
     [[SpotSession defaultSession].player playTrack:track rewind:NO];
-    [self.navigationController pushViewController:[PlayViewController defaultController] animated:YES];
+    [self.navigationController showPlayer];
   }
-//  [[self navigationController] pushViewController:[[[AlbumBrowseViewController alloc] initBrowsingAlbum:album] autorelease] animated:YES];
 }
+
 
 @end

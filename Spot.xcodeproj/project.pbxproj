@@ -40,7 +40,6 @@
 		05447F260FCF1167004CC539 /* SearchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05447EFF0FCF1167004CC539 /* SearchView.xib */; };
 		05447F270FCF1167004CC539 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05447F010FCF1167004CC539 /* SearchViewController.m */; };
 		05447F280FCF1167004CC539 /* SpotAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 05447F030FCF1167004CC539 /* SpotAppDelegate.m */; };
-		05447F290FCF1167004CC539 /* SpotNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05447F050FCF1167004CC539 /* SpotNavigationController.m */; };
 		05447F2A0FCF1167004CC539 /* SpotPlaylistTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 05447F070FCF1167004CC539 /* SpotPlaylistTableViewDataSource.m */; };
 		05447F390FCF1173004CC539 /* next.png in Resources */ = {isa = PBXBuildFile; fileRef = 05447F2D0FCF1173004CC539 /* next.png */; };
 		05447F3A0FCF1173004CC539 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 05447F2E0FCF1173004CC539 /* pause.png */; };
@@ -83,6 +82,11 @@
 		05A664FF0FCF217D00C8DC40 /* libz.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A664FE0FCF217D00C8DC40 /* libz.1.dylib */; };
 		05A665080FCF21D500C8DC40 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A665070FCF21D500C8DC40 /* libresolv.dylib */; };
 		05A665500FCF2F4400C8DC40 /* SpotTrackList.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A6654E0FCF2F4400C8DC40 /* SpotTrackList.m */; };
+		21F654200FD12BC6000403F8 /* SpotArtistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F654170FD12BC6000403F8 /* SpotArtistCell.m */; };
+		21F654210FD12BC6000403F8 /* SpotCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F654190FD12BC6000403F8 /* SpotCell.m */; };
+		21F654220FD12BC6000403F8 /* SpotImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F6541B0FD12BC6000403F8 /* SpotImageCell.m */; };
+		21F654230FD12BC6000403F8 /* SpotNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F6541D0FD12BC6000403F8 /* SpotNavigationController.m */; };
+		21F654240FD12BC6000403F8 /* SpotTouchableLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F6541F0FD12BC6000403F8 /* SpotTouchableLabel.m */; };
 		31F59AE60FCF64C00054D339 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F59AE20FCF64C00054D339 /* AudioToolbox.framework */; };
 		31F59AE70FCF64C00054D339 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F59AE30FCF64C00054D339 /* CoreGraphics.framework */; };
 		31F59AE80FCF64C00054D339 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F59AE40FCF64C00054D339 /* Foundation.framework */; };
@@ -147,8 +151,6 @@
 		05447F010FCF1167004CC539 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		05447F020FCF1167004CC539 /* SpotAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotAppDelegate.h; sourceTree = "<group>"; };
 		05447F030FCF1167004CC539 /* SpotAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotAppDelegate.m; sourceTree = "<group>"; };
-		05447F040FCF1167004CC539 /* SpotNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotNavigationController.h; sourceTree = "<group>"; };
-		05447F050FCF1167004CC539 /* SpotNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotNavigationController.m; sourceTree = "<group>"; };
 		05447F060FCF1167004CC539 /* SpotPlaylistTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotPlaylistTableViewDataSource.h; sourceTree = "<group>"; };
 		05447F070FCF1167004CC539 /* SpotPlaylistTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotPlaylistTableViewDataSource.m; sourceTree = "<group>"; };
 		05447F2D0FCF1173004CC539 /* next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next.png; sourceTree = "<group>"; };
@@ -226,6 +228,16 @@
 		05A6654E0FCF2F4400C8DC40 /* SpotTrackList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotTrackList.m; sourceTree = "<group>"; };
 		05A6654F0FCF2F4400C8DC40 /* SpotTrackList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotTrackList.h; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Spot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		21F654160FD12BC6000403F8 /* SpotArtistCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotArtistCell.h; sourceTree = "<group>"; };
+		21F654170FD12BC6000403F8 /* SpotArtistCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotArtistCell.m; sourceTree = "<group>"; };
+		21F654180FD12BC6000403F8 /* SpotCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotCell.h; sourceTree = "<group>"; };
+		21F654190FD12BC6000403F8 /* SpotCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotCell.m; sourceTree = "<group>"; };
+		21F6541A0FD12BC6000403F8 /* SpotImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotImageCell.h; sourceTree = "<group>"; };
+		21F6541B0FD12BC6000403F8 /* SpotImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotImageCell.m; sourceTree = "<group>"; };
+		21F6541C0FD12BC6000403F8 /* SpotNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotNavigationController.h; sourceTree = "<group>"; };
+		21F6541D0FD12BC6000403F8 /* SpotNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotNavigationController.m; sourceTree = "<group>"; };
+		21F6541E0FD12BC6000403F8 /* SpotTouchableLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotTouchableLabel.h; sourceTree = "<group>"; };
+		21F6541F0FD12BC6000403F8 /* SpotTouchableLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotTouchableLabel.m; sourceTree = "<group>"; };
 		31F59AE20FCF64C00054D339 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		31F59AE30FCF64C00054D339 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		31F59AE40FCF64C00054D339 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -266,6 +278,7 @@
 		05447EC50FCF1167004CC539 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				21F654140FD12BC6000403F8 /* Controllers */,
 				05447EC60FCF1167004CC539 /* Browse */,
 				05447ED20FCF1167004CC539 /* CoSpotify */,
 				05447EE90FCF1167004CC539 /* Login */,
@@ -275,8 +288,6 @@
 				05447EFE0FCF1167004CC539 /* Search */,
 				05447F020FCF1167004CC539 /* SpotAppDelegate.h */,
 				05447F030FCF1167004CC539 /* SpotAppDelegate.m */,
-				05447F040FCF1167004CC539 /* SpotNavigationController.h */,
-				05447F050FCF1167004CC539 /* SpotNavigationController.m */,
 				05447F060FCF1167004CC539 /* SpotPlaylistTableViewDataSource.h */,
 				05447F070FCF1167004CC539 /* SpotPlaylistTableViewDataSource.m */,
 			);
@@ -286,15 +297,13 @@
 		05447EC60FCF1167004CC539 /* Browse */ = {
 			isa = PBXGroup;
 			children = (
+				21F654270FD12C06000403F8 /* Detail */,
 				05447EC70FCF1167004CC539 /* AlbumBrowseView.xib */,
 				05447EC80FCF1167004CC539 /* AlbumBrowseViewController.h */,
 				05447EC90FCF1167004CC539 /* AlbumBrowseViewController.m */,
 				05447ECA0FCF1167004CC539 /* ArtistBrowseView.xib */,
 				05447ECB0FCF1167004CC539 /* ArtistBrowseViewController.h */,
 				05447ECC0FCF1167004CC539 /* ArtistBrowseViewController.m */,
-				05447ECD0FCF1167004CC539 /* ArtistDetailView.xib */,
-				05447ECE0FCF1167004CC539 /* ArtistDetailViewController.h */,
-				05447ECF0FCF1167004CC539 /* ArtistDetailViewController.m */,
 				05447ED00FCF1167004CC539 /* SpotImageView.h */,
 				05447ED10FCF1167004CC539 /* SpotImageView.m */,
 			);
@@ -304,6 +313,7 @@
 		05447ED20FCF1167004CC539 /* CoSpotify */ = {
 			isa = PBXGroup;
 			children = (
+				21F654070FD12B44000403F8 /* SpotControllers */,
 				05447ED30FCF1167004CC539 /* CoSpotify.h */,
 				05447ED40FCF1167004CC539 /* CoSpotify.m */,
 				05447ED50FCF1167004CC539 /* SpotAlbum.h */,
@@ -491,6 +501,48 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		21F654070FD12B44000403F8 /* SpotControllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = SpotControllers;
+			sourceTree = "<group>";
+		};
+		21F654140FD12BC6000403F8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				21F654150FD12BC6000403F8 /* Cells */,
+				21F6541C0FD12BC6000403F8 /* SpotNavigationController.h */,
+				21F6541D0FD12BC6000403F8 /* SpotNavigationController.m */,
+				21F6541E0FD12BC6000403F8 /* SpotTouchableLabel.h */,
+				21F6541F0FD12BC6000403F8 /* SpotTouchableLabel.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		21F654150FD12BC6000403F8 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				21F654160FD12BC6000403F8 /* SpotArtistCell.h */,
+				21F654170FD12BC6000403F8 /* SpotArtistCell.m */,
+				21F654180FD12BC6000403F8 /* SpotCell.h */,
+				21F654190FD12BC6000403F8 /* SpotCell.m */,
+				21F6541A0FD12BC6000403F8 /* SpotImageCell.h */,
+				21F6541B0FD12BC6000403F8 /* SpotImageCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		21F654270FD12C06000403F8 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				05447ECD0FCF1167004CC539 /* ArtistDetailView.xib */,
+				05447ECE0FCF1167004CC539 /* ArtistDetailViewController.h */,
+				05447ECF0FCF1167004CC539 /* ArtistDetailViewController.m */,
+			);
+			name = Detail;
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
@@ -618,7 +670,6 @@
 				05447F250FCF1167004CC539 /* ProfileViewController.m in Sources */,
 				05447F270FCF1167004CC539 /* SearchViewController.m in Sources */,
 				05447F280FCF1167004CC539 /* SpotAppDelegate.m in Sources */,
-				05447F290FCF1167004CC539 /* SpotNavigationController.m in Sources */,
 				05447F2A0FCF1167004CC539 /* SpotPlaylistTableViewDataSource.m in Sources */,
 				05A664830FCF1B1B00C8DC40 /* aes.c in Sources */,
 				05A664840FCF1B1B00C8DC40 /* audio.c in Sources */,
@@ -643,6 +694,11 @@
 				05A664A30FCF1B1B00C8DC40 /* util.c in Sources */,
 				05A664A40FCF1B1B00C8DC40 /* xml.c in Sources */,
 				05A665500FCF2F4400C8DC40 /* SpotTrackList.m in Sources */,
+				21F654200FD12BC6000403F8 /* SpotArtistCell.m in Sources */,
+				21F654210FD12BC6000403F8 /* SpotCell.m in Sources */,
+				21F654220FD12BC6000403F8 /* SpotImageCell.m in Sources */,
+				21F654230FD12BC6000403F8 /* SpotNavigationController.m in Sources */,
+				21F654240FD12BC6000403F8 /* SpotTouchableLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

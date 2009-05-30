@@ -10,7 +10,6 @@
 #import "SpotPlaylist.h"
 #import "SpotTrack.h"
 
-
 @implementation SpotPlaylistTableViewDataSource
 
 @synthesize playlist;
@@ -55,7 +54,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
-  return playlist ? [playlist.playableTrackList.tracks count] : 0;
+  return playlist ? [playlist.tracks count] : 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
@@ -73,16 +72,15 @@
     cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
   }
   
+
 	int idx = [indexPath indexAtPosition:1];
-  
-  if(idx % 2 == 0) {
+	if(idx % 2 == 0) {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
 	} else {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
 	}
-  
-  SpotTrack *track = [playlist.playableTrackList.tracks objectAtIndex:idx];
-  cell.accessoryType = track.playable ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+  SpotTrack *track = [playlist.tracks objectAtIndex:idx];
+  cell.accessoryType = track.isPlayable ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
   cell.textLabel.text = [NSString stringWithFormat:@"%@", track.title];
   
   return cell;

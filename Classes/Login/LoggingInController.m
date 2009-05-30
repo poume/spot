@@ -122,6 +122,7 @@
 
 -(IBAction)tryAgain;
 {
+  [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"useAutoLogin"];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

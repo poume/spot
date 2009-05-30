@@ -68,6 +68,7 @@
 		lastServerContact.text = @"";
 	}
 	[self.navigationController setNavigationBarHidden:YES animated:NO];
+  autoLoginSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"useAutoLogin"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -87,5 +88,10 @@
     [super dealloc];
 }
 
+
+-(IBAction)toggleAutoLogin:(UISwitch*)sender;
+{
+  [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"useAutoLogin"];
+}
 
 @end

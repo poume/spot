@@ -13,6 +13,8 @@
 #import "SpotTrack.h"
 #import "SpotArtist.h"
 
+#import "SpotNavigationController.h"
+
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
@@ -108,7 +110,7 @@ PlayViewController *GlobalPlayViewController;
 -(void)selectCurrentTrack;
 {
   if(self.defaultPlayer.currentPlaylist && self.defaultPlayer.currentTrack){
-    int idx = [self.defaultPlayer.currentPlaylist.playableTrackList.tracks indexOfObject:self.defaultPlayer.currentTrack];
+    int idx = [self.defaultPlayer.currentPlaylist.tracks indexOfObject:self.defaultPlayer.currentTrack];
     if(idx != NSNotFound)
       [trackList selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
   }
@@ -151,7 +153,7 @@ PlayViewController *GlobalPlayViewController;
   artistLabel.text = track.artist.name;
 	trackLabel.text = track.title;
 	albumLabel.text = track.albumName;
-  albumArt.artId = track.coverId;
+  albumArt.artId = [SpotId coverId:(char*)[track.coverId cStringUsingEncoding:NSASCIIStringEncoding]];
 }
 
 -(void)playerNotification:(NSNotification*)n;
@@ -203,13 +205,22 @@ PlayViewController *GlobalPlayViewController;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  int idx = [indexPath indexAtPosition:1];
-  SpotTrack *track = [playlistDataSource.playlist.playableTrackList.tracks objectAtIndex:idx];
-  if(track.playable){
+	int idx = [indexPath indexAtPosition:1];
+  SpotTrack *track = [playlistDataSource.playlist.tracks objectAtIndex:idx];
+  if(track.isPlayable){
     [[SpotSession defaultSession].player playTrack:track rewind:YES];
   }
 }
 
 
+-(void)didTouchLabel:(id)sender;
+{
+  SpotPlayer *player = [SpotSession defaultSession].player;
+  if(sender == artistLabel){
+    [self.navigationController showArtist:player.currentTrack.artist];
+  } else if(sender == albumLabel){
+    [self.navigationController showAlbum:player.currentTrack.album];
+  }
+}
 
 @end
