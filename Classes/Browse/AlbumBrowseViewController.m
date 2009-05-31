@@ -102,6 +102,7 @@
 #pragma mark Table view callbacks
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	int idx = [indexPath indexAtPosition:1];
   
   SpotTrack *track = [album.playlist.tracks objectAtIndex:idx];

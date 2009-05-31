@@ -141,6 +141,7 @@
 
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
   SpotPlaylist *playlist = [self.playlists objectAtIndex:[indexPath indexAtPosition:0]];
   [[SpotSession defaultSession].player playPlaylist:playlist firstTrack:nil];
   [self.navigationController showPlayer];

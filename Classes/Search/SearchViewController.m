@@ -240,6 +240,7 @@ enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	int idx = [indexPath indexAtPosition:1];
 	switch([self getSection:[indexPath indexAtPosition:0]]) {
     case SuggestionSection:{

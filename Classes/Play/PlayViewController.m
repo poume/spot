@@ -22,6 +22,7 @@ PlayViewController *GlobalPlayViewController;
 
 @interface PlayViewController ()
 @property (readonly) SpotPlayer * defaultPlayer;
+-(void)backAction:(id)sender;
 @end
 
 
@@ -63,6 +64,11 @@ PlayViewController *GlobalPlayViewController;
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  [self.navigationItem setTitleView:titleView];
+  
+
+  
+  
   //register self as observer for the default player
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerNotification:) name:nil object:[self defaultPlayer]];
 }
@@ -91,19 +97,31 @@ PlayViewController *GlobalPlayViewController;
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [titleView dealloc];
   [super dealloc];
 }
 
 #pragma mark
 #pragma mark Transitions
+
+-(void)viewWillAppear:(BOOL)animated;
+{
+  self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+}
+
+-(void)viewDidDisappear:(BOOL)animated;
+{
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
 -(void)viewDidAppear:(BOOL)animated;
 {
-	self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
 }
 -(void)viewWillDisappear:(BOOL)animated;
 {
-	self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
 	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
 
@@ -119,6 +137,12 @@ PlayViewController *GlobalPlayViewController;
 
 #pragma mark 
 #pragma mark Actions
+-(void)backAction:(id)sender;
+{
+  //navbarLeftButton??
+  [self.navigationController popViewControllerAnimated:YES];
+}
+
 -(IBAction)togglePlaying:(id)sender;
 {
 	if(!self.defaultPlayer.isPlaying)
@@ -150,34 +174,34 @@ PlayViewController *GlobalPlayViewController;
 
 -(void)showInfoForTrack:(SpotTrack*)track;
 {
-  artistLabel.text = track.artist.name;
-	trackLabel.text = track.title;
-	albumLabel.text = track.albumName;
+  titleView.artistLabel.text = track.artist.name;
+	titleView.trackLabel.text = track.title;
+	titleView.albumLabel.text = track.albumName;
   albumArt.artId = track.coverId;
 }
 
 -(void)playerNotification:(NSNotification*)n;
 {
-  NSLog(@"PlayerView got notification %@", n);
+  //NSLog(@"PlayerView got notification %@", n);
   if([[n name] isEqual:@"willplay"]){
-    [waitForPlaySpinner setHidden:NO];
+    [waitForPlaySpinner startAnimating];
     [playPauseButton setHidden:YES];
   }
   if([[n name] isEqual:@"play"]){
     [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
-    [waitForPlaySpinner setHidden:YES];
+    [waitForPlaySpinner stopAnimating];
     [self selectCurrentTrack];
   }
   if([[n name] isEqual:@"pause"]){
     [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
-    [waitForPlaySpinner setHidden:YES];
+    [waitForPlaySpinner stopAnimating];
   }
   if([[n name] isEqual:@"stop"]){
     [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     [playPauseButton setHidden:NO];
-    [waitForPlaySpinner setHidden:YES];
+    [waitForPlaySpinner stopAnimating];
   }
   if([[n name] isEqual:@"playlist"]){
     playlistDataSource.playlist = [[n userInfo] valueForKey:@"playlist"];
@@ -186,10 +210,10 @@ PlayViewController *GlobalPlayViewController;
   }
   if([[n name] isEqual:@"track"]){
     [self showInfoForTrack:[[n userInfo] valueForKey:@"track"]];
-    [trackList reloadData];
     [self selectCurrentTrack];
   }
   if([[n name] isEqual:@"trackDidEnd"]){
+    [[SpotSession defaultSession].player stop];
     [[SpotSession defaultSession].player playNextTrack];
   }
   if([[n name] isEqual:@"playlistDidEnd"]){
@@ -212,15 +236,5 @@ PlayViewController *GlobalPlayViewController;
   }
 }
 
-
--(void)didTouchLabel:(id)sender;
-{
-  SpotPlayer *player = [SpotSession defaultSession].player;
-  if(sender == artistLabel){
-    [self.navigationController showArtist:player.currentTrack.artist];
-  } else if(sender == albumLabel){
-    [self.navigationController showAlbum:player.currentTrack.album];
-  }
-}
 
 @end

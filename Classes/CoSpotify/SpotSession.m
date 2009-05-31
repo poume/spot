@@ -30,13 +30,8 @@ SpotSession *SpotSessionSingleton;
 
 NSString *SpotSessionErrorDomain = @"SpotSessionErrorDomain";
 
-#pragma mark Callbacks
 
-@interface SpotPlayer (ForSessionOnly)
--(void)trackDidStart;
--(void)trackDidEnd;
-@end
-
+///Holds some stuff we need to know where to call back on async fetches
 @interface SpotSessionFetchJob : NSObject
 {
   NSString *fetchId;
@@ -67,23 +62,30 @@ NSString *SpotSessionErrorDomain = @"SpotSessionErrorDomain";
 
 @end
 
+#pragma mark callback receivers
 
-
-
-void cb_got_xml(struct despotify_session *ds, char* xml){
-  SpotSession *ss = (SpotSession*)ds->user_data;
-  [ss performSelectorOnMainThread:@selector(receivedXML:) withObject:[NSString stringWithUTF8String:xml] waitUntilDone:NO];
+void cb_client_callback(int type, void*data){
+  NSLog(@"client callback %d", type);
+  SpotSession *ss = [SpotSession defaultSession];
+  switch(type){
+    case DESPOTIFY_TRACK_CHANGE:
+      break;
+    case DESPOTIFY_TRACK_START:
+        [ss.player performSelectorOnMainThread:@selector(trackDidStart) withObject:nil waitUntilDone:NO];
+      break;
+    case DESPOTIFY_TRACK_END:
+        [ss.player performSelectorOnMainThread:@selector(trackDidEnd) withObject:nil waitUntilDone:NO];
+      break;
+  }
 }
 
-void cb_track_start(struct despotify_session *ds){
-  SpotSession *ss = (SpotSession*)ds->user_data;
-  [ss.player performSelectorOnMainThread:@selector(trackDidStart) withObject:nil waitUntilDone:NO];
-}
 
-void cb_track_end(struct despotify_session *ds){
-  SpotSession *ss = (SpotSession*)ds->user_data;
-  [ss.player performSelectorOnMainThread:@selector(trackDidEnd) withObject:nil waitUntilDone:NO];
-}
+
+@interface SpotPlayer (ForSessionOnly)
+-(void)trackDidStart;
+-(void)trackDidEnd;
+@end
+
 
 @interface SpotSession ()
 @property (nonatomic, readwrite) BOOL loggedIn;
@@ -115,17 +117,13 @@ void cb_track_end(struct despotify_session *ds){
 		return nil;
 	}
 	
-	session = despotify_init_client();
+	session = despotify_init_client(cb_client_callback);
 	if( !session) {
 		NSLog(@"Init client failed");
 		[self release];
 		return nil;
 	}
   
-  session->user_data = self;
-  session->cb_track_start = cb_track_start;
-  session->cb_track_end = cb_track_end;
-  session->cb_got_xml = cb_got_xml;
   
   player = [[SpotPlayer alloc] initWithSession:self];
 	

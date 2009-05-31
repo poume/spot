@@ -50,7 +50,6 @@
   if((self.isPlaying || willPlay) && !songChange) return NO;
   //start playback if we have something to play
   if(self.currentTrack){
-    [UIApplication sharedApplication].idleTimerDisabled = YES; //dont sleep while playing music
     //if([self.savedTrack isEqual:self.currentTrack])
     
     if([self.savedTrack isEqual:self.currentTrack] && !songChange) {
@@ -67,7 +66,6 @@
 -(BOOL)stopPlayback;
 {
   if(self.isPlaying && !willPlay){
-    [UIApplication sharedApplication].idleTimerDisabled = NO; //can sleep while not playing
     isPlaying = !despotify_stop([SpotSession defaultSession].session) && isPlaying;  
     return !isPlaying;
   }
@@ -116,8 +114,7 @@
 {
   //stop playback
   if(self.isPlaying && !willPlay){
-    [UIApplication sharedApplication].idleTimerDisabled = NO; //can sleep while paused
-    self.isPlaying = !despotify_pause([SpotSession defaultSession].session) && self.isPlaying;
+    isPlaying = !despotify_pause([SpotSession defaultSession].session) && isPlaying;
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"pause" object:self]];
     return YES;
   }
