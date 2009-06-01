@@ -132,8 +132,8 @@ int audioqueue_prepare_device (AUDIOCTX *actx)
 	fmt->mReserved = 0;
 	
 	state.actx = actx;	
-//	state.bufferByteSize = 32768;
-	state.bufferByteSize = 512;
+	state.bufferByteSize = 32768;
+	
 	//printFmt(*fmt);
 	
 	check(AudioQueueNewOutput(
