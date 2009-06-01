@@ -68,11 +68,10 @@ void cb_client_callback(int type, void*data){
   NSLog(@"client callback %d", type);
   SpotSession *ss = [SpotSession defaultSession];
   switch(type){
-    case DESPOTIFY_TRACK_CHANGE:
-      break;
     case DESPOTIFY_TRACK_START:
         [ss.player performSelectorOnMainThread:@selector(trackDidStart) withObject:nil waitUntilDone:NO];
       break;
+    case DESPOTIFY_TRACK_CHANGE:
     case DESPOTIFY_TRACK_END:
         [ss.player performSelectorOnMainThread:@selector(trackDidEnd) withObject:nil waitUntilDone:NO];
       break;
