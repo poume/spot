@@ -20,7 +20,7 @@
 
 #include <AudioToolbox/AudioQueue.h>
 
-#define kNumberBuffers 7
+#define kNumberBuffers 4
 static struct AQPlayerState {
     AudioStreamBasicDescription   mDataFormat;
     AudioQueueRef                 mQueue;
@@ -132,8 +132,8 @@ int audioqueue_prepare_device (AUDIOCTX *actx)
 	fmt->mReserved = 0;
 	
 	state.actx = actx;	
-	state.bufferByteSize = 32768;
-	
+//	state.bufferByteSize = 32768;
+	state.bufferByteSize = 512;
 	//printFmt(*fmt);
 	
 	check(AudioQueueNewOutput(
