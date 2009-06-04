@@ -9,6 +9,7 @@
 #import "PlaylistsViewController.h"
 #import "SpotNavigationController.h"
 #import "CoSpotify.h"
+#import "SpotCell.h"
 
 @implementation PlaylistsViewController
 -(id)init;
@@ -22,9 +23,11 @@
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-	
-
+  [super viewDidLoad];
+  
+  tableView = (UITableView*)self.view;
+	tableView.rowHeight = 70;
+  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -110,39 +113,51 @@
 }
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+{
 
-	SpotPlaylist *playlist = [self.playlists objectAtIndex:[indexPath indexAtPosition:0]];
-	//SpotTrack *track = [[playlist tracks] objectAtIndex:[indexPath indexAtPosition:1]];
-    
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-    }
-	
-	int idx = [indexPath indexAtPosition:0];
-	if(idx % 2 == 0) {
-        cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
-	} else {
-		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
-	}
-	
-	// Configure the cell. 
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	cell.textLabel.text = playlist.name;
+  int idx = [indexPath indexAtPosition:1];
+	SpotPlaylist *playlist = [self.playlists objectAtIndex:idx];
+  
+  static NSString *SpotCellIdentifier = @"SpotCell";
+  
+  SpotCell *cell = (SpotCell *)[tableView dequeueReusableCellWithIdentifier:SpotCellIdentifier];
+  if (cell == nil) 
+    cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
+  	
+  float totalTime = 0;
+  for(SpotTrack *t in playlist.tracks)
+    totalTime += t.length;
 
-    return cell;
+  if(idx % 2 == 0) {
+    cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
+  } else {
+	cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
+  }
+
+  cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+  
+  //TODO: some nice way to show collaborative status
+  [cell setTitle:playlist.name 
+        subTitle:playlist.author 
+     bottomTitle:[NSString stringWithFormat:@"%.2f hours in %d tracks", totalTime/60.0/60.0, [playlist.tracks count]]
+      popularity:-1 
+           image:NO 
+         imageId:nil];
+
+  return cell;
 }
 
 
 
 
 // Override to support row selection in the table view.
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  [tableView deselectRowAtIndexPath:indexPath animated:YES];
-  SpotPlaylist *playlist = [self.playlists objectAtIndex:[indexPath indexAtPosition:0]];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+  int idx = [indexPath indexAtPosition:1];
+  SpotPlaylist *playlist = [self.playlists objectAtIndex:idx];
+  
+  //TODO: Shud display tracks in playlist
   [[SpotSession defaultSession].player playPlaylist:playlist firstTrack:nil];
   [self.navigationController showPlayer];
     // Navigation logic may go here -- for example, create and push another view controller.

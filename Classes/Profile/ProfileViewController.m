@@ -69,6 +69,11 @@
 	}
 	[self.navigationController setNavigationBarHidden:YES animated:NO];
   autoLoginSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"useAutoLogin"];
+  coversInSearchSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"coversInSearch"];
+  experimentalSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"experimental"];
+  
+  UIScrollView *scroller = (UIScrollView*)self.view;
+  scroller.contentSize = ((UIView*)[scroller.subviews objectAtIndex:0]).bounds.size;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -92,6 +97,16 @@
 -(IBAction)toggleAutoLogin:(UISwitch*)sender;
 {
   [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"useAutoLogin"];
+}
+
+-(IBAction)toggleCovers:(UISwitch*)sender;
+{
+  [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"coversInSearch"];
+}
+
+-(IBAction)toggleExperimental:(UISwitch*)sender;
+{
+  [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"experimental"];
 }
 
 @end

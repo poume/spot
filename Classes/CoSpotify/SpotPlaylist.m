@@ -33,6 +33,21 @@
   [super dealloc];
 }
 
+-(id)initWithCoder:(NSCoder *)decoder;
+{
+  self = [super init];
+  track = [[decoder decodeObjectForKey:@"TStrack"] retain];
+  position = [decoder decodeIntForKey:@"TSposition"];
+//  playlist = [[decoder decodeObjectForKey:@"TSplaylist"] retain]; //NOO
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)encoder;
+{
+  [encoder encodeInt:position forKey:@"TSposition"];
+  [encoder encodeObject:track forKey:@"TStrack"];
+}
+
 -(NSString *)description;
 {
   return [NSString stringWithFormat:@"<SpotTrackSlot pos: %d. track: %@>", position, track];
@@ -57,9 +72,11 @@
   slots = [[NSMutableArray alloc] init];
   for(struct track *track = playlist->tracks; track != NULL; track = track->next){
     SpotTrack *a_track = [[SpotTrack alloc] initWithTrack:track];
-    SpotTrackSlot *slot = [[SpotTrackSlot alloc] initWithPlaylist:self track:a_track position:[slots count]];
-    [slots addObject:slot];
-    [slot release];
+    if(a_track.isPlayable){
+      SpotTrackSlot *slot = [[SpotTrackSlot alloc] initWithPlaylist:self track:a_track position:[slots count]];
+      [slots addObject:slot];
+      [slot release];
+    }
     [a_track release];
   }
     
@@ -150,6 +167,11 @@
 
 @synthesize tracks, name, author, collaborative;
 
+-(NSString *)id;
+{
+  return playlistId;
+}
+
 -(NSArray*)tracks;
 {
   //TODO: cache tracklist
@@ -163,6 +185,33 @@
 -(NSString*)description;
 {
 	return [NSString stringWithFormat:@"<SpotPlaylist %d tracks: %@>", self.name, self.tracks];
+}
+
+#pragma mark NSCoding
+-(id)initWithCoder:(NSCoder *)decoder;
+{
+  self = [super initWithCoder:decoder];
+  name          = [[decoder decodeObjectForKey:@"SPname"] retain];
+  author        = [[decoder decodeObjectForKey:@"SPauthor"] retain];
+  playlistId    = [[decoder decodeObjectForKey:@"SPid"] retain];
+  collaborative = [decoder decodeBoolForKey:@"SPcollaborative"];
+  revision      = [decoder decodeIntForKey:@"SPrevision"];
+  checksum      = [decoder decodeIntForKey:@"SPchecksum"];
+  slots         = [[decoder decodeObjectForKey:@"SPslots"] retain];
+  NSLog(@"%@", self);
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)encoder;
+{
+  [super encodeWithCoder:encoder];
+  [encoder encodeObject:name forKey:@"SPname"];
+  [encoder encodeObject:author forKey:@"SPauthor"];
+  [encoder encodeObject:playlistId forKey:@"SPid"];
+  [encoder encodeBool:collaborative forKey:@"SPcollaborative"];
+  [encoder encodeInt:revision forKey:@"SPrevision"];
+  [encoder encodeInt:checksum forKey:@"SPchecksum"];
+  [encoder encodeObject:slots forKey:@"SPslots"];
 }
 
 @end

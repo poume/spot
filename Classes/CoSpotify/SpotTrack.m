@@ -13,7 +13,7 @@
 
 @implementation SpotTrack
 
-@synthesize trackId, title, artistId, artistName, albumName, albumId, coverId, trackNumber, length, files, popularity, similarTrackIds, restrictions, year, isPlayable;
+@synthesize trackId, title, artistId, artistName, albumName, albumId, coverId, trackNumber, length, fileId, popularity, similarTrackIds, restrictions, year, isPlayable;
 
 @synthesize album, artist;
 
@@ -27,7 +27,7 @@
   hasMetadata = track->has_meta_data;
   isPlayable = track->playable;
   trackId = [[NSString alloc] initWithUTF8String:(char*)track->track_id];
-  files = nil;
+  fileId = [[NSString alloc] initWithUTF8String:(char*)track->file_id];
   albumId = [[NSString alloc] initWithUTF8String:(char*)track->album_id];
   coverId = [[NSString alloc] initWithUTF8String:(char*)track->cover_id];
   title = [[NSString alloc] initWithUTF8String:track->title];
@@ -52,7 +52,7 @@
   [albumId release];
   [coverId release];
   [similarTrackIds release];
-  [files release];
+  [fileId release];
   [restrictions release];
   [artist release];
   [album release];
@@ -103,6 +103,78 @@
   if(album) return album;
   album = [[[SpotSession defaultSession] albumById:albumId] retain];
   return album;
+}
+
+
+-(struct track*)de_track;
+{
+  return &de_track;
+}
+
+#pragma mark NSCoding
+
+-(id)initWithCoder:(NSCoder *)decoder;
+{
+  //struct track de_track; //we need a struct to send to despotify
+  
+  trackId = [[decoder decodeObjectForKey:@"Tid"] retain];
+  title = [[decoder decodeObjectForKey:@"Ttitle"] retain];
+  artistId = [[decoder decodeObjectForKey:@"TartistId"] retain];
+  artistName = [[decoder decodeObjectForKey:@"TartistName"] retain];
+  albumName = [[decoder decodeObjectForKey:@"TalbumName"] retain];
+  albumId = [[decoder decodeObjectForKey:@"TalbumId"] retain];
+  coverId = [[decoder decodeObjectForKey:@"TcoverId"] retain];
+  similarTrackIds = [[decoder decodeObjectForKey:@"Tsimilar"] retain];
+  fileId = [[decoder decodeObjectForKey:@"Tfiles"] retain];
+  restrictions = [[decoder decodeObjectForKey:@"Trestrictions"] retain];
+  
+  trackNumber = [decoder decodeIntForKey:@"TtrackNumber"];
+  year = [decoder decodeIntForKey:@"Tyear"];
+  length = [decoder decodeFloatForKey:@"Tlength"];
+  popularity = [decoder decodeFloatForKey:@"Tpopularity"];
+  
+
+  isPlayable = [decoder decodeBoolForKey:@"Tplayable"];
+  hasMetadata = [decoder decodeBoolForKey:@"ThasMeta"];
+  
+  artist = [[decoder decodeObjectForKey:@"Tartist"] retain];
+  
+  //fill the struct for despotify
+  de_track.has_meta_data = hasMetadata;
+  de_track.playable = isPlayable;
+  strcpy((char*)de_track.track_id, [trackId UTF8String]);
+  strcpy((char*)de_track.file_id, [fileId UTF8String]);
+  strcpy((char*)de_track.album_id, [albumId UTF8String]);
+  strcpy((char*)de_track.cover_id, [coverId UTF8String]);
+  strcpy(de_track.title, [title UTF8String]);
+  strcpy(de_track.album, [albumName UTF8String]);
+  de_track.length = (int)(length * 1000);
+  de_track.tracknumber = trackNumber;
+  de_track.popularity = popularity;
+  de_track.artist = NULL;
+  
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)encoder;
+{
+  [encoder encodeObject:trackId forKey:@"Tid"];
+  [encoder encodeObject:title forKey:@"Ttitle"];
+  [encoder encodeObject:artistId forKey:@"TartistId"];
+  [encoder encodeObject:artistName forKey:@"TartistName"];
+  [encoder encodeObject:albumName forKey:@"TalbumName"];
+  [encoder encodeObject:albumId forKey:@"TalbumId"];
+  [encoder encodeObject:coverId forKey:@"TcoverId"];
+  [encoder encodeObject:similarTrackIds forKey:@"Tsimilar"];
+  [encoder encodeObject:fileId forKey:@"Tfiles"];
+  [encoder encodeObject:restrictions forKey:@"Trestrictions"];
+  [encoder encodeInt:trackNumber forKey:@"TtrackNumber"];
+  [encoder encodeInt:year forKey:@"Tyear"];
+  [encoder encodeFloat:length forKey:@"Tlength"];
+  [encoder encodeFloat:popularity forKey:@"Tpopularity"];
+  [encoder encodeBool:isPlayable forKey:@"Tplayable"];
+  [encoder encodeBool:hasMetadata forKey:@"ThasMeta"];
+  [encoder encodeObject:artist forKey:@"Tartist"];
 }
 
 @end

@@ -35,8 +35,16 @@ PlayViewController *GlobalPlayViewController;
 }
 -init;
 {
-	if( ! [super initWithNibName:@"PlayView" bundle:nil] ) return nil;
-
+  //Nibs: 
+  //PlayView
+  //  with flipview. Flip cover art to show playlist
+  //PlayView2
+  //  cover art is header of playlist
+  NSString *nib = @"PlayView";
+  if([[NSUserDefaults standardUserDefaults] boolForKey:@"experimental"])
+    nib = @"PlayView2";
+	if( ! [super initWithNibName:nib bundle:nil] ) return nil;
+	
   AudioSessionInitialize (NULL, NULL, NULL, NULL); 
   AudioSessionSetActive (true);
   UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
@@ -63,7 +71,8 @@ PlayViewController *GlobalPlayViewController;
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
   [super viewDidLoad];
-  
+  trackList.rowHeight = 70;
+    trackList.sectionIndexMinimumDisplayRowCount = 20;
   [self.navigationItem setTitleView:titleView];
   
 
@@ -127,7 +136,8 @@ PlayViewController *GlobalPlayViewController;
 
 -(void)selectCurrentTrack;
 {
-  if(self.defaultPlayer.currentPlaylist && self.defaultPlayer.currentTrack){
+  //bounds check if we are at top of list
+  if(trackList.bounds.origin.y > 80 && self.defaultPlayer.currentPlaylist && self.defaultPlayer.currentTrack){
     int idx = [self.defaultPlayer.currentPlaylist.tracks indexOfObject:self.defaultPlayer.currentTrack];
     if(idx != NSNotFound)
       [trackList selectRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
@@ -149,8 +159,8 @@ PlayViewController *GlobalPlayViewController;
 		[self play];
 	else
 		[self pause];
-
 }
+
 -(IBAction)pause;
 {
   [[SpotSession defaultSession].player pause];
@@ -162,14 +172,12 @@ PlayViewController *GlobalPlayViewController;
 }
 -(IBAction)next;
 {
-  [[SpotSession defaultSession].player stop];
-  [[SpotSession defaultSession].player playNextTrack];
+  [[SpotSession defaultSession].player next];
 }
 
 -(IBAction)prev;
 {
-  [[SpotSession defaultSession].player stop];
-  [[SpotSession defaultSession].player playPreviousTrack];
+  [[SpotSession defaultSession].player previous];
 }
 
 -(void)showInfoForTrack:(SpotTrack*)track;
@@ -183,38 +191,41 @@ PlayViewController *GlobalPlayViewController;
 -(void)playerNotification:(NSNotification*)n;
 {
   //NSLog(@"PlayerView got notification %@", n);
-  if([[n name] isEqual:@"willplay"]){
+  if([[n name] isEqual:@"playbackWillStart"]){
     [waitForPlaySpinner startAnimating];
     [playPauseButton setHidden:YES];
   }
-  if([[n name] isEqual:@"play"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
+  if([[n name] isEqual:@"playbackDidStart"]){
+    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner stopAnimating];
     [self selectCurrentTrack];
   }
-  if([[n name] isEqual:@"pause"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+  if([[n name] isEqual:@"playbackDidPause"]){
+    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner stopAnimating];
   }
-  if([[n name] isEqual:@"stop"]){
-    [playPauseButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+  if([[n name] isEqual:@"playbackDidStop"]){
+    [playPauseButton setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateDisabled|UIControlStateSelected];
     [playPauseButton setHidden:NO];
     [waitForPlaySpinner stopAnimating];
   }
-  if([[n name] isEqual:@"playlist"]){
+  if([[n name] isEqual:@"playlistDidChange"]){
     playlistDataSource.playlist = [[n userInfo] valueForKey:@"playlist"];
+    if(playlistDataSource.playlist.author || [playlistDataSource.playlist.author length] != 0)
+      trackList.sectionHeaderHeight = 44.0;
+    else
+      trackList.sectionHeaderHeight = 10;
     [trackList reloadData];
     [self selectCurrentTrack];
   }
-  if([[n name] isEqual:@"track"]){
+  if([[n name] isEqual:@"trackDidChange"]){
     [self showInfoForTrack:[[n userInfo] valueForKey:@"track"]];
     [self selectCurrentTrack];
   }
   if([[n name] isEqual:@"trackDidEnd"]){
-    [[SpotSession defaultSession].player stop];
-    [[SpotSession defaultSession].player playNextTrack];
+    //the playing of next track is handled by SpotPlayer
   }
   if([[n name] isEqual:@"playlistDidEnd"]){
     

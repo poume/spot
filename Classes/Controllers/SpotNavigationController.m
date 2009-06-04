@@ -130,6 +130,7 @@
       }break;
       case SpotLinkTypePlaylist:{
         SpotPlaylist *pl = [session playlistByURI:uri];
+        [session addPlaylist:pl];
         [session.player playPlaylist:pl firstTrack:nil];
         [self showPlayer];
       }break;

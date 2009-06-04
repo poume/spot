@@ -12,6 +12,19 @@
 #import "AlbumBrowseViewController.h"
 #import "SpotNavigationController.h"
 #import "ArtistDetailViewController.h"
+#import "SpotCell.h"
+
+@interface ArtistBrowseViewController ()
+@property (retain) SpotArtist *artist;
+@property (retain) NSArray *albums;
+@end
+
+NSInteger AlbumComparer(SpotAlbum *a, SpotAlbum *b, void * ignore)
+{
+	// kan lägga in mer fancy grejer här sen...
+	return [[NSNumber numberWithInt:b.year] compare:[NSNumber numberWithInt:a.year]];
+}
+
 
 @implementation ArtistBrowseViewController
 -(id)initBrowsingArtist:(SpotArtist*)artist_;
@@ -19,12 +32,18 @@
 	if( ! [super initWithNibName:@"ArtistBrowseView" bundle:nil])
 		return nil;
   
-	artist = [artist_ retain];
-  [artist loadMoreInfo];
+	self.artist = artist_;
   
+	self.albums = [artist.albums sortedArrayUsingFunction:AlbumComparer context:NULL];
+	
 	return self;
 }
 
+- (void)dealloc {
+  self.artist = nil;
+	self.albums = nil;
+  [super dealloc];
+}
 /*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
@@ -39,8 +58,9 @@
   if(artist.portraitId){
     portrait.artId = artist.portraitId;
   }
-
-
+  albumTable.rowHeight = 70;
+//  albumTable.sectionHeaderHeight = 0;
+  
   artistName.text = artist.name;
   yearsActive.text = artist.yearsActive;
   popularity.progress = artist.popularity;
@@ -67,10 +87,6 @@
 }
 
 
-- (void)dealloc {
-  [artist release];
-  [super dealloc];
-}
 
 #pragma mark Table view callbacks
 
@@ -81,7 +97,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
-  return [artist.albums count];
+  return [albums count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
@@ -92,24 +108,28 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-  static NSString *CellIdentifier = @"Cell";
+  static NSString *SpotCellIdentifier = @"SpotCell";
   
-  UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
-  if (cell == nil) {
-    cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-  }
+  SpotCell *cell = (SpotCell *)[albumTable dequeueReusableCellWithIdentifier:SpotCellIdentifier];
+  if (cell == nil) 
+    cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
+  
   
   int idx = [indexPath indexAtPosition:1];
+  SpotAlbum *album = [albums objectAtIndex:idx];
+  cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
   if(idx % 2 == 0) {
   	cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
   } else {
 	cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
   }
-	
-  SpotAlbum *album = [artist.albums objectAtIndex:idx];
-  cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-  NSString *yearString = [NSString stringWithFormat:@" (%d)", album.year];
-  cell.textLabel.text = [NSString stringWithFormat:@"%@%@", album.name, album.year ? yearString : @""];
+  
+  [cell setTitle:album.name
+        subTitle:album.artistName
+     bottomTitle:album.year ? [NSString stringWithFormat:@"%d", album.year] : @""
+      popularity:album.popularity
+           image:YES
+         imageId:album.coverId];
   
   return cell;
 }
@@ -119,15 +139,16 @@
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	int idx = [indexPath indexAtPosition:1];
 
-  SpotAlbum *album = [artist.albums objectAtIndex:idx];
+  SpotAlbum *album = [albums objectAtIndex:idx];
   [[self navigationController] pushViewController:[[[AlbumBrowseViewController alloc] initBrowsingAlbum:album] autorelease] animated:YES];
 }
 
 -(IBAction)showDetail:(id)sender;
 {
-  ArtistDetailViewController *detailView = [[ArtistDetailViewController alloc] initWithArtist:artist];
+  ArtistDetailViewController *detailView = [(ArtistDetailViewController*)[ArtistDetailViewController alloc] initWithArtist:artist];
   [self.navigationController pushViewController:detailView animated:YES];
   [detailView release];
 }
 
+@synthesize artist, albums;
 @end

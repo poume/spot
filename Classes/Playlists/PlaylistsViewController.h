@@ -9,8 +9,9 @@
 @interface PlaylistsViewController : UIViewController 
 	<UITableViewDelegate, UITableViewDataSource>
 {
-	IBOutlet UITableView *tableView;
 	NSArray *playlists;
+  
+  UITableView *tableView;
 }
 
 @end

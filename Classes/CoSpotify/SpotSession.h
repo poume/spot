@@ -29,6 +29,8 @@
   SpotPlayer *player;
   
   SpotCache *cache;
+  
+  NSMutableArray *playlists;
 }
 +(SpotSession*)defaultSession;
 -(void)cleanup;
@@ -43,6 +45,7 @@
 -(SpotArtist *)artistById:(NSString *)id_;
 -(SpotAlbum *)albumById:(NSString *)id;
 -(SpotTrack *)trackById:(NSString *)id;
+-(SpotPlaylist *)playlistById:(NSString *)id;
 
 -(SpotAlbum*)albumByURI:(SpotURI*)uri;
 -(SpotArtist*)artistByURI:(SpotURI*)uri;
@@ -51,6 +54,11 @@
 -(SpotSearch*)searchByURI:(SpotURI*)uri;
 
 -(SpotItem *)cachedItemById:(NSString*)id;
+
+
+-(void)playTrack:(SpotTrack*)track;
+
+-(void)addPlaylist:(SpotPlaylist*)playlist;
 
 @property (nonatomic, readonly) BOOL loggedIn;
 @property (readonly) NSString *username;

@@ -69,15 +69,14 @@ void cb_client_callback(int type, void*data){
   SpotSession *ss = [SpotSession defaultSession];
   switch(type){
     case DESPOTIFY_TRACK_START:
-        [ss.player performSelectorOnMainThread:@selector(trackDidStart) withObject:nil waitUntilDone:NO];
+        //[ss.player performSelectorOnMainThread:@selector(trackDidStart) withObject:nil waitUntilDone:NO];
       break;
     case DESPOTIFY_TRACK_CHANGE:
     case DESPOTIFY_TRACK_END:
-        [ss.player performSelectorOnMainThread:@selector(trackDidEnd) withObject:nil waitUntilDone:NO];
+        //[ss.player performSelectorOnMainThread:@selector(trackDidEnd) withObject:nil waitUntilDone:NO];
       break;
   }
 }
-
 
 
 @interface SpotPlayer (ForSessionOnly)
@@ -97,6 +96,12 @@ void cb_client_callback(int type, void*data){
 
 @implementation SpotSession
 @synthesize loggedIn, session, player;
+
+-(NSString*)pathForFile:(NSString *)f;
+{
+  NSString *docsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+  return [docsPath stringByAppendingPathComponent:f];
+}
 
 +(SpotSession*)defaultSession;
 {
@@ -123,16 +128,24 @@ void cb_client_callback(int type, void*data){
 		return nil;
 	}
   
-  
   player = [[SpotPlayer alloc] initWithSession:self];
 	
 	self.loggedIn = NO;
   
   cache = [[SpotCache alloc] init];
-	
   networkLock = [[NSLock alloc] init];
   [self startThread];
   
+  //load stored playlists
+  playlists = [NSKeyedUnarchiver unarchiveObjectWithFile:[self pathForFile:@"playlist"]];
+  NSLog(@"got %@ %@", [playlists class], playlists);
+  if([playlists isKindOfClass:[NSArray class]]){
+    playlists = [[playlists mutableCopy] retain];
+  } else {
+    NSLog(@"playlists file is not a list! Recreating");
+    playlists = [[NSMutableArray alloc] init];
+    [NSKeyedArchiver archiveRootObject:playlists toFile:[self pathForFile:@"playlist"]];
+  }
 	return self;
 }
 
@@ -141,6 +154,7 @@ void cb_client_callback(int type, void*data){
   [self stopThread];
 	NSLog(@"Logged out");
   [player release];
+  [playlists release];
   [cache release];
 	despotify_exit(session);
 	despotify_cleanup();
@@ -177,18 +191,20 @@ void cb_client_callback(int type, void*data){
 
 -(NSArray*)playlists;
 {
-  [networkLock lock];
-	NSMutableArray *playlists = [NSMutableArray array];
+  
+//	NSMutableArray *playlists = [NSMutableArray array];
 	return playlists; // until they fix their playlist servers
 	
+  [networkLock lock];
 	struct playlist *rootlist = despotify_get_stored_playlists(session);
+  [networkLock unlock];
   NSLog(@"got lists");
 	for(struct playlist *pl = rootlist; pl; pl = pl->next) {
 		SpotPlaylist *playlist = [[[SpotPlaylist alloc] initWithPlaylist:pl] autorelease];
 		[playlists addObject:playlist];
 	}
 	despotify_free_playlist(rootlist);
-	[networkLock unlock];
+
 	return playlists;
 }
 
@@ -314,6 +330,21 @@ void cb_client_callback(int type, void*data){
   return the_track;
 }
 
+
+-(SpotPlaylist *)playlistById:(NSString *)id_;
+{
+  SpotItem *item = [cache itemById:id_];
+  if(item) return (SpotPlaylist*)item;
+
+  [networkLock lock];
+  struct playlist *pl = despotify_get_playlist(session, (char*)[id_ cStringUsingEncoding:NSASCIIStringEncoding]);
+  [networkLock unlock];
+  SpotPlaylist *list = [[[SpotPlaylist alloc] initWithPlaylist:pl] autorelease];
+  
+  [cache addItem:list];
+  return list;
+}
+
 #pragma mark Get by uri
 //TODO: support cacheing for uris
 -(SpotAlbum*)albumByURI:(SpotURI*)uri;
@@ -342,9 +373,9 @@ void cb_client_callback(int type, void*data){
 
 -(SpotPlaylist*)playlistByURI:(SpotURI*)uri;
 {
-  [networkLock unlock];
-  struct playlist* pl = despotify_link_get_playlist(session, uri.link);
   [networkLock lock];
+  struct playlist* pl = despotify_link_get_playlist(session, uri.link);
+  [networkLock unlock];
   return [[[SpotPlaylist alloc] initWithPlaylist:pl] autorelease];
 }
 
@@ -359,6 +390,33 @@ void cb_client_callback(int type, void*data){
 -(SpotItem *)cachedItemById:(NSString*)id_;
 {
   return [cache itemById:id_];
+}
+
+-(void)doPlayTrack:(SpotTrack*)track;
+{
+  [networkLock lock];
+  despotify_play(session, track.getTrack, NO);
+  [networkLock unlock];
+}
+
+-(void)playTrack:(SpotTrack*)track;
+{
+  //queue on mainthread do we dont collide with loading of images
+  [self performSelector:@selector(doPlayTrack:) onThread:thread withObject:track waitUntilDone:NO];
+}
+
+-(void)addPlaylist:(SpotPlaylist*)playlist;
+{
+  NSLog(@"addPlaylist");
+  if(![playlists containsObject:playlist]){
+    NSLog(@"adding playlist %@", playlist.name);
+    //add 
+    [playlists addObject:playlist];
+    //save to disc
+    [NSKeyedArchiver archiveRootObject:playlists toFile:[self pathForFile:@"playlist"]];
+  } else {
+    NSLog(@"playlist %@ exists", playlist.name);
+  }
 }
 
 #pragma mark Threading

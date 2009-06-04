@@ -7,6 +7,12 @@
  *
  */
 
+/**
+ NOTE:
+ _stop is called when pcm_read detects EOF
+ 
+ */
+
 #include "audioqueue.h"
 
 #include <stdio.h>
@@ -20,12 +26,15 @@
 
 #include <AudioToolbox/AudioQueue.h>
 
+extern void audioqueue_global_statechange_callback_hack(int state);
+
 #define kNumberBuffers 7
 static struct AQPlayerState {
     AudioStreamBasicDescription   mDataFormat;
     AudioQueueRef                 mQueue;
     AudioQueueBufferRef           mBuffers[kNumberBuffers];
     volatile bool                          mIsRunning;
+  volatile bool pcm_reading;
 	AUDIOCTX *actx;
 	unsigned bufferByteSize;
 } state;
@@ -88,12 +97,41 @@ void printFmt(AudioStreamBasicDescription fmt) {
 			   fmt.mBytesPerPacket);	
 }
 
+void audioqueue_propertylistener (void *inUserData, AudioQueueRef inAQ, AudioQueuePropertyID inID)
+{
+  int running = 0;
+  UInt32 size = 4;
+  AudioQueueGetProperty(inAQ, kAudioQueueProperty_IsRunning, &running, &size);
+  printf("Running?: %d\n", running);
+  state.mIsRunning = running;
+  //Now THIS is where we want our callbacks to shoot from
+  int state = running == 1? 1 : 0;
+  //0 = stopped
+  //1 = playing
+  audioqueue_global_statechange_callback_hack(state);
+}
+
+
+void audioqueue_cleanup()
+{
+  printf("cleanup\n");
+  if(state.mQueue){
+    //Dispose all AQ resources including buffers
+    AudioQueueDispose(state.mQueue, TRUE);
+    state.mQueue = NULL;
+    state.mBuffers[0] = NULL;    
+  }
+}
+
 int audioqueue_init_device (void *dev)
 {
 	printf("init device\n");
 	memset(&state, 0, sizeof(state));
 	return 0;
 }
+
+
+//this never gets called from despotify btw.. 
 int audioqueue_free_device ()
 {
 	printf("free device\n");
@@ -101,21 +139,15 @@ int audioqueue_free_device ()
 		return 0;
 	
 	audioqueue_stop(NULL);
+  audioqueue_cleanup();
 	
-	
-	for (int i = 0; i < kNumberBuffers; ++i)
-		AudioQueueFreeBuffer(state.mQueue, state.mBuffers[i]);
-	
-	check(AudioQueueDispose(state.mQueue, TRUE));
-	state.mQueue = NULL;
 	return 0;
 }
 int audioqueue_prepare_device (AUDIOCTX *actx)
 {
+  if(state.mQueue)
+		audioqueue_cleanup();
 	printf("preparing device\n");
-	
-	if(state.mQueue)
-		return 0;
 	
 	AudioStreamBasicDescription *fmt = &state.mDataFormat;
 	
@@ -146,7 +178,8 @@ int audioqueue_prepare_device (AUDIOCTX *actx)
 		&state.mQueue
 	));
 	
-	
+	//register callback
+  AudioQueueAddPropertyListener(state.mQueue, kAudioQueueProperty_IsRunning, audioqueue_propertylistener, NULL);
 	
 	return 0;
 }
@@ -155,49 +188,63 @@ int audioqueue_prepare_device (AUDIOCTX *actx)
 int audioqueue_play (AUDIOCTX *ctx)
 {
 	printf("playing device\n");
-	state.mIsRunning = TRUE;
-	
-	if(!state.mBuffers[0])
-		for (int i = 0; i < kNumberBuffers; ++i) {               
-			check(AudioQueueAllocateBuffer (                           
-											state.mQueue,             
-											state.bufferByteSize,     
-											&state.mBuffers[i]        
-											));
-			// Prime with data
-			audio_callback (&state,                        
-							state.mQueue,                  
-							state.mBuffers[i]              
-							);
-			
-		}		
-	
-	
-	check(AudioQueueStart(state.mQueue, NULL));
-	
-	/*do {
-		CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
-	} while (state.mIsRunning);*/
-	
+  if(!state.mIsRunning){
+    state.mIsRunning = TRUE;
+    
+    if(!state.mBuffers[0])
+      for (int i = 0; i < kNumberBuffers; ++i) {               
+        check(AudioQueueAllocateBuffer (                           
+                        state.mQueue,             
+                        state.bufferByteSize,     
+                        &state.mBuffers[i]        
+                        ));
+        // Prime with data
+        audio_callback (&state,                        
+                state.mQueue,                  
+                state.mBuffers[i]              
+                );
+        
+      }		
+    
+    
+    check(AudioQueueStart(state.mQueue, NULL));
+    
+    /*do {
+      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
+    } while (state.mIsRunning);*/
+  } else printf("Audio wanted to play but I'm allready running!");    
 	
 	return 0;
 }
 
 int audioqueue_stop (AUDIOCTX *ctx)
 {
+  if(state.pcm_reading) 
+    return 0; //We "probably" got called from pcm_read, in which case we dont really want to stop just yet
 	printf("stopping device\n");
-	state.mIsRunning = FALSE;
-	check(AudioQueueStop(state.mQueue, TRUE));
-  state.mQueue = NULL;
-  state.mBuffers[0] = NULL;
+  if(state.mIsRunning){
+    state.mIsRunning = FALSE;
+    check(AudioQueueStop(state.mQueue, TRUE));
+    audioqueue_cleanup();
+  } else printf("Audio wanted to stop but I'm not running!");  
   return 0;
 }
 
 int audioqueue_pause (AUDIOCTX *ctx)
 {
 	printf("pausing device\n");
-	state.mIsRunning = FALSE;
-	check(AudioQueuePause(state.mQueue));
+	if(state.mIsRunning)
+    check(AudioQueuePause(state.mQueue));
+  else printf("Audio wanted to pause but I'm not running!");
+  return 0;
+}
+
+int audioqueue_resume (AUDIOCTX *ctx)
+{
+  printf("resumeing device\n");
+  if(state.mIsRunning)
+    check(AudioQueueStart(state.mQueue, NULL));
+  else printf("Audio wanted to resume but I'm not running!");
   return 0;
 }
 
@@ -211,7 +258,7 @@ static void audio_callback (
 	int totalSamplesRead = 0;
 	
 	while (totalSamplesRead < state.bufferByteSize) {
-
+    state.pcm_reading = true; //see _stop
 		int samplesRead = pcm_read(
 			state.actx->pcmprivate, // Audio context
 			bufout->mAudioData + totalSamplesRead, // Buffer
@@ -221,9 +268,20 @@ static void audio_callback (
 			TRUE, // Signed?
 			NULL
 		);
+    state.pcm_reading = false;
+    if(!state.mQueue) 
+      return;
+    
+    if(samplesRead == 0){
+      printf("EOF reached. Stopping AQ\n");
+      AudioQueueStop(state.mQueue, false);
+      state.mIsRunning = false;
+      break; //dont read more
+    }
 		
 		if(samplesRead < 0) {
 			fprintf(stderr, "pcm_read failed: %d", samplesRead);
+      AudioQueueStop(state.mQueue, false);
 			return;
 		}
 		
@@ -244,7 +302,7 @@ audioqueue_prepare_device,
 audioqueue_play,		/* Play */
 audioqueue_stop,		/* Stop */
 audioqueue_pause,		/* Pause */
-audioqueue_play,		/* Resume */
+audioqueue_resume,	/* Resume */
 }
 
 , *driver = &coreaudio_driver_desc;

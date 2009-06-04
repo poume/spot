@@ -77,6 +77,7 @@
 		05A664A40FCF1B1B00C8DC40 /* xml.c in Sources */ = {isa = PBXBuildFile; fileRef = 05A6647B0FCF1B1B00C8DC40 /* xml.c */; };
 		05A664FF0FCF217D00C8DC40 /* libz.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A664FE0FCF217D00C8DC40 /* libz.1.dylib */; };
 		05A665080FCF21D500C8DC40 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A665070FCF21D500C8DC40 /* libresolv.dylib */; };
+		210998B60FD5C0750028F90F /* PlayView2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 210998B50FD5C0750028F90F /* PlayView2.xib */; };
 		21F654200FD12BC6000403F8 /* SpotArtistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F654170FD12BC6000403F8 /* SpotArtistCell.m */; };
 		21F654210FD12BC6000403F8 /* SpotCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F654190FD12BC6000403F8 /* SpotCell.m */; };
 		21F654220FD12BC6000403F8 /* SpotImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F6541B0FD12BC6000403F8 /* SpotImageCell.m */; };
@@ -135,8 +136,8 @@
 		05447EED0FCF1167004CC539 /* LoginView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
 		05447EEE0FCF1167004CC539 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		05447EEF0FCF1167004CC539 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		05447EF10FCF1167004CC539 /* FlipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlipView.h; sourceTree = "<group>"; };
-		05447EF20FCF1167004CC539 /* FlipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlipView.m; sourceTree = "<group>"; };
+		05447EF10FCF1167004CC539 /* FlipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlipView.h; path = ../Play/FlipView.h; sourceTree = "<group>"; };
+		05447EF20FCF1167004CC539 /* FlipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipView.m; path = ../Play/FlipView.m; sourceTree = "<group>"; };
 		05447EF30FCF1167004CC539 /* PlayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayView.xib; sourceTree = "<group>"; };
 		05447EF40FCF1167004CC539 /* PlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayViewController.h; sourceTree = "<group>"; };
 		05447EF50FCF1167004CC539 /* PlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayViewController.m; sourceTree = "<group>"; };
@@ -224,6 +225,7 @@
 		05A664FE0FCF217D00C8DC40 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = usr/lib/libz.1.dylib; sourceTree = SDKROOT; };
 		05A665070FCF21D500C8DC40 /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Spot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		210998B50FD5C0750028F90F /* PlayView2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PlayView2.xib; path = Classes/Play/PlayView2.xib; sourceTree = "<group>"; };
 		21F654160FD12BC6000403F8 /* SpotArtistCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotArtistCell.h; sourceTree = "<group>"; };
 		21F654170FD12BC6000403F8 /* SpotArtistCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotArtistCell.m; sourceTree = "<group>"; };
 		21F654180FD12BC6000403F8 /* SpotCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotCell.h; sourceTree = "<group>"; };
@@ -363,8 +365,6 @@
 			isa = PBXGroup;
 			children = (
 				05447EF30FCF1167004CC539 /* PlayView.xib */,
-				05447EF10FCF1167004CC539 /* FlipView.h */,
-				05447EF20FCF1167004CC539 /* FlipView.m */,
 				05447EF40FCF1167004CC539 /* PlayViewController.h */,
 				05447EF50FCF1167004CC539 /* PlayViewController.m */,
 				21F65B550FD1B564000403F8 /* PlayTitleView.h */,
@@ -524,6 +524,8 @@
 				21F6541D0FD12BC6000403F8 /* SpotNavigationController.m */,
 				21F6541E0FD12BC6000403F8 /* SpotTouchableLabel.h */,
 				21F6541F0FD12BC6000403F8 /* SpotTouchableLabel.m */,
+				05447EF10FCF1167004CC539 /* FlipView.h */,
+				05447EF20FCF1167004CC539 /* FlipView.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -559,6 +561,7 @@
 				05447F2B0FCF1173004CC539 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				210998B50FD5C0750028F90F /* PlayView2.xib */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				05A6649A0FCF1B1B00C8DC40 /* local.mk in Resources */,
 				21F65AC80FD1A327000403F8 /* Default.png in Resources */,
 				21F65C9D0FD1CAB8000403F8 /* arrow-left.png in Resources */,
+				210998B60FD5C0750028F90F /* PlayView2.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,12 +813,15 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.0;
+				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
 		};

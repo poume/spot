@@ -9,10 +9,18 @@
 #import "SpotPlaylistTableViewDataSource.h"
 #import "SpotPlaylist.h"
 #import "SpotTrack.h"
+#import "SpotCell.h"
 
 @implementation SpotPlaylistTableViewDataSource
 
-@synthesize playlist;
+@synthesize playlist, cellAccessoryType;
+
+-(id)init;
+{
+  if(![super init]) return nil;
+  cellAccessoryType = UITableViewCellAccessoryNone;
+  return self;
+}
 
 -(void)dealloc;
 {
@@ -59,29 +67,39 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
 {
-  return playlist.name;
+  if(playlist.author || [playlist.author length] != 0)
+    return [NSString stringWithFormat:@"%@\nby %@", playlist.name, playlist.author];
+  return @"";
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-  static NSString *CellIdentifier = @"Cell";
-  
-  UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
-  if (cell == nil) {
-    cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-  }
+  static NSString *SpotCellIdentifier = @"SpotCell";
   
 
 	int idx = [indexPath indexAtPosition:1];
-	if(idx % 2 == 0) {
+  SpotTrack *track = [playlist.tracks objectAtIndex:idx];
+
+  SpotCell *cell = (SpotCell *)[tableView_ dequeueReusableCellWithIdentifier:SpotCellIdentifier];
+  if (cell == nil) 
+    cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
+
+  if(idx % 2 == 0) {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.3 blue:0.2 alpha:0.8]; 
 	} else {
 		cell.textLabel.textColor = [UIColor colorWithRed:0.1 green:0.5 blue:0.1 alpha:0.9]; 
 	}
-  SpotTrack *track = [playlist.tracks objectAtIndex:idx];
-  cell.accessoryType = track.isPlayable ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-  cell.textLabel.text = [NSString stringWithFormat:@"%@", track.title];
+  
+  cell.accessoryType = cellAccessoryType;
+  
+  [cell setTitle:track.title 
+        subTitle:track.artist.name 
+    // bottomTitle:[NSString stringWithFormat:@"length: %.2f", track.length/60.0]
+     bottomTitle:track.albumName
+      popularity:track.popularity
+           image:NO 
+         imageId:nil];
   
   return cell;
 }

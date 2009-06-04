@@ -19,7 +19,6 @@
 		return nil;
   
   album = [album_ retain];
-  [album loadMoreInfo];
   self.title = album.name;
   
 	return self;
@@ -55,9 +54,12 @@
   artistName.delegate = self;
 
   popularity.progress = album.popularity;
+  tracks.rowHeight = 70;
+  tracks.sectionHeaderHeight = 0;
   
   playlistDataSource.playlist = album.playlist;
-//  [tracks reloadData];
+  playlistDataSource.cellAccessoryType = UITableViewCellAccessoryDisclosureIndicator; //small arrow
+  [tracks reloadData];
 }
 
 -(void)didTouchLabel:(id)sender;
@@ -104,7 +106,7 @@
 {
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	int idx = [indexPath indexAtPosition:1];
-  
+
   SpotTrack *track = [album.playlist.tracks objectAtIndex:idx];
   if(track.isPlayable){
     [[SpotSession defaultSession].player playTrack:track rewind:NO];

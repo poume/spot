@@ -55,6 +55,9 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
   [super viewDidLoad];
+  //UISegmentedControl *header = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Artists", @"Albums", @"Tracks", nil]];
+  tableView.rowHeight = 70;
+  //tableView.tableHeaderView = header;
   searchBar.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastSearch"];
 }
 
@@ -109,123 +112,98 @@ enum {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return 1;
-	int i = 0;
-    if(searchResults.suggestion) i++;
-    if(searchResults.artists.count) i++;
-    if(searchResults.tracks.count) i++;
-    if(searchResults.albums.count) i++;
-    return i;
+	return 1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section;
+{
+  return 0;
+}
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return 0;
-
-    switch([self getSection:section]) {
-        case TracksSection: return searchResults.tracks.count;
-        case AlbumsSection: return searchResults.albums.count;
-        case ArtistsSection: return searchResults.artists.count;
-        case SuggestionSection: return searchResults.suggestion ? 1 : 0;
-    }
-    
-    return 0;
+	
+	switch (showType) {
+		case ShowArtists: return searchResults.artists.count;
+		case ShowAlbums:  return searchResults.albums.count;
+		case ShowTracks:  return searchResults.tracks.count;
+	}
+	return 0;	
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section;    // fixed font style. use custom view (UILabel) if you want something different
 {
 	if( ! [SpotSession defaultSession].loggedIn || !searchResults) return @"Search results";
-
-    switch([self getSection:section]) {
-        case TracksSection: return @"Tracks";
-        case AlbumsSection: return @"Albums";
-        case ArtistsSection: return @"Artists";
-        case SuggestionSection: return @"Did you mean";
-    }
-    
-    return @"";
-}
-
--(NSInteger)getSection:(NSInteger)section;
-{
-    // Ugly crap
-    if(section == 3) return TracksSection;
-    if(section == 2) {
-        if(!searchResults.artists.count && searchResults.tracks.count) return TracksSection;
-        if(!searchResults.albums.count && searchResults.tracks.count) return TracksSection;
-        if(!searchResults.suggestion && searchResults.tracks.count) return TracksSection;
-        return ArtistsSection;
-    }
-    if(section == 1) {
-        if(searchResults.suggestion && searchResults.albums.count) return AlbumsSection;
-        if(searchResults.suggestion && searchResults.artists.count) return ArtistsSection;
-        if(searchResults.suggestion && searchResults.tracks.count) return TracksSection;
-        if(searchResults.albums.count && searchResults.artists.count) return ArtistsSection;
-        if(searchResults.albums.count && searchResults.tracks.count) return TracksSection;    
-        if(searchResults.artists.count && searchResults.tracks.count) return TracksSection;
-        return AlbumsSection;
-    }
-    if(section == 0) {
-        if(!searchResults.suggestion && searchResults.albums.count) return AlbumsSection;
-        if(!searchResults.suggestion && searchResults.artists.count) return ArtistsSection;
-        if(!searchResults.suggestion && searchResults.tracks.count) return TracksSection;
-        return SuggestionSection;
-    }
-    return 0;
+	
+	return @"???";
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-  static NSString *CellIdentifier = @"Cell";
   static NSString *SpotCellIdentifier = @"AlbumCell";
   UITableViewCell *the_cell = nil;
+  
+  BOOL loadImage = [[NSUserDefaults standardUserDefaults] boolForKey:@"coversInSearch"];
 
 	int idx = [indexPath indexAtPosition:1];
-	switch([self getSection:[indexPath indexAtPosition:0]]) {
-    case SuggestionSection:{	
-      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
+	switch(showType) {
+		case ShowArtists: {
+      SpotCell *cell = (SpotCell *)[tableView dequeueReusableCellWithIdentifier:SpotCellIdentifier];
       if (cell == nil) 
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];      
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = searchResults.suggestion;
-      the_cell = cell;
-    } break;
-		case ArtistsSection: {
-      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
-      if (cell == nil) 
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
             
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = artist.name;
+			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+      
+      
+      [cell setTitle:artist.name
+            subTitle:artist.genres
+         bottomTitle:artist.yearsActive
+          popularity:artist.popularity 
+               image:YES 
+             imageId:loadImage ? artist.portraitId : nil];
+      
       the_cell = cell;
 		} break;
-		case TracksSection: {
-      UITableViewCell *cell = [tableView_ dequeueReusableCellWithIdentifier:CellIdentifier];
-      if (cell == nil) 
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-            
-			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = [NSString stringWithFormat:@"%@", track.title];
-      the_cell = cell;
-		} break;
-		case AlbumsSection: {
+		case ShowAlbums: {
       SpotCell *cell = (SpotCell *)[tableView dequeueReusableCellWithIdentifier:SpotCellIdentifier];
       if(!cell)
         cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
       
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.title.text = album.name;
-      cell.subText.text = album.artistName;
-      cell.artId = album.coverId;
-
+			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+      
+      [cell setTitle:album.name
+            subTitle:album.artistName
+         bottomTitle:album.year ? [NSString stringWithFormat:@"%d", album.year] : nil
+          popularity:album.popularity 
+               image:YES 
+             imageId:loadImage ? album.coverId : nil];
+      
       the_cell = cell;
 		} break;
+    case ShowTracks: {
+      SpotCell *cell = (SpotCell *)[tableView dequeueReusableCellWithIdentifier:SpotCellIdentifier];
+      if(!cell)
+        cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
+      
+			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			//cell.text = [NSString stringWithFormat:@"%@", track.title];
+      [cell setTitle:track.title 
+            subTitle:track.artist.name 
+         bottomTitle:track.albumName 
+          popularity:track.popularity 
+               image:NO 
+             imageId:nil];
+      
+      the_cell = cell;
+		} break;
+      
 	}
 
 	if(idx % 2 == 0) {
@@ -242,26 +220,25 @@ enum {
 {
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	int idx = [indexPath indexAtPosition:1];
-	switch([self getSection:[indexPath indexAtPosition:0]]) {
-    case SuggestionSection:{
-      [searchBar setText:searchResults.suggestion];
-      [self searchForString:searchResults.suggestion];
-    } break;
-		case TracksSection: {
-			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
-			[[SpotSession defaultSession].player playTrack:track rewind:NO];
-      [self.navigationController showPlayer];
-		} break;
-		case ArtistsSection: {
+	switch(showType) {
+		case ShowArtists: {
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
-			
+      //Get the fullprofile artist
+      artist = [[SpotSession defaultSession] artistById:artist.id];
       [self.navigationController showArtist:artist];
 		} break;
-		case AlbumsSection: {
+		case ShowAlbums: {
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
+      //get the fullprofile album
+      album = [[SpotSession defaultSession] albumById:album.id];
 			[self.navigationController showAlbum:album];
 			break;
 		}
+		case ShowTracks: {
+			SpotTrack *track = [searchResults.tracks objectAtIndex:idx];
+			[[SpotSession defaultSession].player playTrack:track rewind:YES];
+      [self.navigationController showPlayer];
+		} break;
 	}
 }
 
@@ -294,6 +271,13 @@ enum {
   [self searchForString:[searchBar_ text]];
 }
 
+
+-(void)headerChanged:(id)sender;
+{
+  UISegmentedControl *e = sender;
+  showType = (SearchShowType)e.selectedSegmentIndex;
+  [tableView reloadData];
+}
 
 #pragma mark 
 #pragma mark Accessors

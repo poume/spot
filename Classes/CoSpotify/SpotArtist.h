@@ -24,7 +24,7 @@
 
 
 
-@interface SpotArtist : SpotItem {
+@interface SpotArtist : SpotItem <NSCoding>{
   BOOL browsing;
   
   NSString *name;
@@ -45,7 +45,9 @@
 -(id)initWithArtist:(struct artist*)artist;
 -(id)initWithArtistBrowse:(struct artist_browse*)artistBrowse;
 
--(void)loadMoreInfo;
+-(id)initWithCoder:(NSCoder *)decoder;
+-(void)encodeWithCoder:(NSCoder *)encoder;
+
 
 -(NSComparisonResult)compare:(SpotArtist*)other;
 

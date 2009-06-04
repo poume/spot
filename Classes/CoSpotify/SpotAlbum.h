@@ -41,7 +41,8 @@
 -(id)initWithAlbum:(struct album*)album;
 -(id)initWithAlbumBrowse:(struct album_browse*)album;
 
--(void)loadMoreInfo;
+-(id)initWithCoder:(NSCoder *)decoder;
+-(void)encodeWithCoder:(NSCoder *)encoder;
 
 -(NSComparisonResult)compare:(SpotAlbum*)other;
 

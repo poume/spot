@@ -46,11 +46,16 @@
 
 -(void)setSpotImage:(SpotImage*)img;
 {
+  //we still want it?
+  if(![self.artId isEqual:img.id]) return;
   [img retain];
   [spotImage release];
   spotImage = img;
   if(spotImage)
-    [self setImage:spotImage.image];
+    if(self.bounds.size.width < 100)
+      [self setImage:spotImage.cellImage];
+    else
+      [self setImage:spotImage.image];
   else
     [self setImage:[UIImage imageNamed:@"icon.png"]]; //default image  
   [activityView stopAnimating];
@@ -85,9 +90,11 @@
     artId = id;
     //default image while loading
     [self setImage:[UIImage imageNamed:@"icon.png"]];
-    if(artId){
+    if(artId && [artId length] > 0){
       //Begin load image
       [self loadImage];
+    } else {
+      [activityView stopAnimating];
     }
   } 
 }

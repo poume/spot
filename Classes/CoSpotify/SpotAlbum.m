@@ -88,13 +88,36 @@
   [super dealloc];
 }
 
--(void)loadMoreInfo;
+
+-(id)initWithCoder:(NSCoder *)decoder;
 {
-  if(!browsing){
-    NSLog(@"Album %@ loading more info", self);
-    struct album_browse *ab = despotify_get_album([SpotSession defaultSession].session, (char*)[albumId UTF8String]);
-    [self loadBrowse:ab];
-  }
+  [super initWithCoder:decoder];
+  browsing = [decoder decodeBoolForKey:@"SAbrowsing"];
+  name = [[decoder decodeObjectForKey:@"SAname"] retain];
+  albumId = [[decoder decodeObjectForKey:@"SAalbumId"] retain];
+  year = [decoder decodeIntForKey:@"SAyear"];
+  coverId = [[decoder decodeObjectForKey:@"SAcoverId"] retain];
+  popularity = [decoder decodeFloatForKey:@"SApopularity"];
+  artistName = [[decoder decodeObjectForKey:@"SAartistName"] retain];
+  artistId = [[decoder decodeObjectForKey:@"SAartistId"] retain];
+  review = [[decoder decodeObjectForKey:@"SAreview"] retain];
+  discs = [[decoder decodeObjectForKey:@"SAdiscs"] retain];
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)encoder;
+{
+  [super encodeWithCoder:encoder];
+  [encoder encodeBool:browsing forKey:@"SAbrowsing"];
+  [encoder encodeObject:name forKey:@"SAname"];
+  [encoder encodeObject:albumId forKey:@"SAalbumId"];
+  [encoder encodeInt:year forKey:@"SAyear"];
+  [encoder encodeObject:coverId forKey:@"SAcoverId"];
+  [encoder encodeFloat:popularity forKey:@"SApopularity"];
+  [encoder encodeObject:artistName forKey:@"SAartistName"];
+  [encoder encodeObject:artistId forKey:@"SAartistId"];
+  [encoder encodeObject:review forKey:@"SAreview"];
+  [encoder encodeObject:discs forKey:@"SAdiscs"];
 }
 
 -(NSComparisonResult)compare:(SpotAlbum*)other;
@@ -114,7 +137,6 @@
 
 -(SpotPlaylist*)playlist;
 {
-  if(!browsing) [self loadMoreInfo];
   return [discs lastObject];
 }
 
