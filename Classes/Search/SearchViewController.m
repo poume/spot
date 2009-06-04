@@ -157,7 +157,7 @@ enum {
         cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
             
 			SpotArtist *artist = [searchResults.artists objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       
       
       [cell setTitle:artist.name
@@ -175,7 +175,7 @@ enum {
         cell = [[[SpotCell alloc] initWithFrame:CGRectZero reuseIdentifier:SpotCellIdentifier] autorelease];
       
 			SpotAlbum *album = [searchResults.albums objectAtIndex:idx];
-			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       
       [cell setTitle:album.name
             subTitle:album.artistName

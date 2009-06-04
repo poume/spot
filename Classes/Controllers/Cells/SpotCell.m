@@ -44,7 +44,7 @@
     self.popularity.progress = 0.5;
     [self.popularity release];
     
-    float size = [self bounds].size.height-1;
+    float size = [self bounds].size.height;
     spotArt = [[SpotImageView alloc] initWithFrame:CGRectMake(0, 0, size, size)];
     [spotArt setImage:[UIImage imageNamed:@"icon.png"]];
     [self addSubview:spotArt];

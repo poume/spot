@@ -39,7 +39,7 @@
     CGRect frame;
     
     //image
-    frame = CGRectMake(selfRect.origin.x+10, selfRect.origin.y+1, selfRect.size.height, selfRect.size.height-1);
+    frame = CGRectMake(selfRect.origin.x, selfRect.origin.y, selfRect.size.height, selfRect.size.height);
     spotArt.frame = frame;
     
   }    
