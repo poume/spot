@@ -258,6 +258,7 @@ enum {
   // Do extensive search
 	self.searchResults = nil;
   //NSLog(@"searching");
+  if([string isEqual:@""]) return;
 	self.searchResults = [SpotSearch searchFor:string maxResults:50];
   //save last search if it generated any results
   if(searchResults && searchResults.totalAlbums || searchResults.totalTracks || searchResults.totalArtists){
